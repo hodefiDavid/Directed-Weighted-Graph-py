@@ -85,7 +85,8 @@ class DiGraph(GraphInterface):
         return 'DiGraph: |V| = ' + str(self.v_size()) + '\t|E| = ' + str(self.e_size()) \
                + '\n' + str(self.nodes) + '\n' + "Edge Data:\n" + node_str + '\n'
 
-    # def __repr__(self):
+    def __eq__(self, other):
+        return self.edge_size == other.edge_size and self.nodes == other.nodes
 
 
 class NodeData:
@@ -108,3 +109,7 @@ class NodeData:
 
     def __repr__(self):
         return self.__str__()
+
+    def __eq__(self, other):
+        return self.id == other.id and self.position == other.position \
+               and self.node_in == other.node_in and self.node_out == other.node_out
