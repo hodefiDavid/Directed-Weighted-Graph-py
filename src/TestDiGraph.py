@@ -1,4 +1,7 @@
+from time import time
 from unittest import TestCase
+import pytest
+
 from DiGraph import *
 
 
@@ -98,6 +101,20 @@ class TestDiGraph(TestCase):
 
         self.assertTrue(g.remove_edge(3, 7))
         self.assertEqual(edges_size - 1, g.e_size())
+
+    def test_million_nodes(self):
+        start = time()
+        g = DiGraph()
+        for i in range(10 ** 6):
+            g.add_node(i)
+        for i in range(g.v_size()):
+            for j in range(10):
+                g.add_edge(g.v_size() - i + j, i, 2.2)
+        for i in range(60):
+            g.add_edge(i, i + 20, 1.1)
+        end = time()
+        print(end-start)
+        self.assertTrue((end - start) < 25)
 
     @staticmethod
     def simple_graph_generate():
