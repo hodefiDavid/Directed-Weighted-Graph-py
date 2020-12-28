@@ -72,4 +72,7 @@ class TestGraphAlgo(TestCase):
         self.assertNotEqual(lst, lst1)
 
     def test_plot_graph(self):
-        self.fail()
+        ga = GraphAlgo()
+        ga.load_from_json('../data/A0')
+        ga.plot_graph()
+        # print(ga.get_graph())
