@@ -1,4 +1,4 @@
-from xml.parsers import expat
+from heapq import heappush, heappop
 
 from DiGraph import *
 from GraphAlgoInterface import *
@@ -51,24 +51,80 @@ class GraphAlgo(GraphAlgoInterface):
             return False
 
     def shortest_path(self, id1: int, id2: int) -> (float, list):
-        # node_data
-        # Src = _g.getNode(src);
-        # node_data
-        # Dest = _g.getNode(dest);
-        # if (Src != null & & Dest != null) {
-        # this.initNodeWeight();
-        # this.initNodeTag();
-        #
-        # setDistance(Src);
-        #
-        # return Dest.getWeight();
-        # }
+        if id1 not in self.graph.nodes.keys() or id2 not in self.graph.nodes.keys():
+            return -1, None
+        src = self.graph.nodes[id1]
+        dest = self.graph.nodes[id2]
+
+        if id1 == id2:
+            return 0, [src]
+
+        self.set_tag_dist(id1)
+        if dest.tag == -1:
+            return -1, []
+
+        lst = []
+        lst.insert(0, dest)
+        curr = lst[0]
+
+        while curr != src:
+            for i, w in curr.node_in.items():
+                n = self.graph.nodes[i]
+                if n.tag + w == curr.tag:
+                    lst.insert(0, n)
+                    curr = lst[0]
+                    break
+
+        return dest.tag, lst
+
+    def set_tag_dist(self, id1):
+        p_queue = []
+        self.init_tags()
+        curr = self.graph.nodes[id1]
+        curr.tag = 0
+        heappush(p_queue, curr)
+        while len(p_queue) > 0:
+            curr = heappop(p_queue)
+            for nodeIn_id, w in curr.node_out.items():
+                n = self.graph.nodes[nodeIn_id]
+                if n.tag == -1 or n.tag > curr.tag + w:
+                    n.tag = curr.tag + w
+                    heappush(p_queue, n)
+
+    def init_tags(self):
+        for i in self.graph.nodes.values():
+            i.tag = -1
 
     def connected_component(self, id1: int) -> list:
-        pass
+        if id1 not in self.graph.nodes.keys():
+            return None
+
+        self.set_tag_dist(id1)
+        lst = [n for n in self.graph.nodes.values() if n.tag != -1]
+        for n in lst:
+            if self.shortest_path(n.id, id1)[0] == -1:
+                lst.remove(n)
+        lst.sort(key=lambda x: x.id)
+        return lst
 
     def connected_components(self) -> List[list]:
-        pass
+        lst = []
+        for n in self.graph.nodes.values():
+            temp = self.connected_component(n.id)
+            flag = True
+            for i in lst:
+                if self.list_equals(i, temp):
+                    flag = False
+            if flag:
+                lst.append(temp)
+        return lst
 
     def plot_graph(self) -> None:
         pass
+
+    @staticmethod
+    def list_equals(lst1, lst2):
+        for j in lst1:
+            if j not in lst2:
+                return False
+        return True

@@ -1,6 +1,5 @@
 from time import time
 from unittest import TestCase
-import pytest
 
 from DiGraph import *
 
@@ -113,7 +112,6 @@ class TestDiGraph(TestCase):
         for i in range(60):
             g.add_edge(i, i + 20, 1.1)
         end = time()
-        print(end-start)
         self.assertTrue((end - start) < 25)
 
     @staticmethod
@@ -131,7 +129,7 @@ class TestDiGraph(TestCase):
         (7) -> {3: 3.5, 8: 3.5}
         (8) -> {2: 4.0, 9: 4.0}
         (9) -> {1: 4.5}
-        """
+        https://user-images.githubusercontent.com/73063199/103218639-3a423580-4924-11eb-8316-f438c2846570.png      """
         g = DiGraph()
         for i in range(10):
             g.add_node(i)

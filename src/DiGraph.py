@@ -92,7 +92,7 @@ class DiGraph(GraphInterface):
 class NodeData:
     def __init__(self, node_id: int, pos: tuple = None):
         self.id = node_id
-        self.tag = 0.0
+        self.tag = -1.0
         self.remark = ""
         self.node_out = dict()
         self.node_in = dict()
@@ -113,3 +113,9 @@ class NodeData:
     def __eq__(self, other):
         return self.id == other.id and self.position == other.position \
                and self.node_in == other.node_in and self.node_out == other.node_out
+
+    def __lt__(self, other):
+        t = self.tag - other.tag
+        return t
+
+
