@@ -1,13 +1,8 @@
+import json
 from heapq import heappush, heappop
-import matplotlib.pyplot as plt
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.path import Path
-import matplotlib.patches as patches
+
 from DiGraph import *
 from GraphAlgoInterface import *
-import json
-
 from gui import Gui
 
 
@@ -25,9 +20,12 @@ class GraphAlgo(GraphAlgoInterface):
                 data = json.load(file)
                 g = DiGraph()
                 for i in data['Nodes']:
-                    str_lst = i['pos'].split(',')
-                    pos = (float(str_lst[0]), float(str_lst[1]))
-                    g.add_node(i['id'], pos)
+                    if 'pos' in i.keys():
+                        str_lst = i['pos'].split(',')
+                        pos = (float(str_lst[0]), float(str_lst[1]))
+                        g.add_node(i['id'], pos)
+                    else:
+                        g.add_node(i['id'])
                 for i in data['Edges']:
                     g.add_edge(i['src'], i['dest'], i['w'])
                 self.graph = g
@@ -127,34 +125,6 @@ class GraphAlgo(GraphAlgoInterface):
 
     def plot_graph(self) -> None:
         Gui(self.graph)
-
-    # def graph_range(self):
-    #     x_range = [float('inf'), float('-inf')]
-    #     y_range = [float('inf'), float('-inf')]
-    #     for i in self.get_graph().nodes.values():
-    #         pos = i.position
-    #         if pos[0] < x_range[0]:
-    #             x_range[0] = pos[0]
-    #         if pos[0] > x_range[1]:
-    #             x_range[1] = pos[0]
-    #         if pos[1] < y_range[0]:
-    #             y_range[0] = pos[1]
-    #         if pos[1] > y_range[1]:
-    #             y_range[1] = pos[1]
-    #
-    #     return x_range, y_range
-
-    # def world2frame(self, world_range, point):
-    #     y = 100
-    #     x = 100
-    #     min_dt = world_range[0]
-    #     max_dt = world_range[1]
-
-    # @staticmethod
-    # def connectpoints(x, y, p1, p2):
-    #     x1, x2 = x[p1], x[p2]
-    #     y1, y2 = y[p1], y[p2]
-    #     plt.plot([x1, x2], [y1, y2], 'k-')
 
     @staticmethod
     def list_equals(lst1, lst2):

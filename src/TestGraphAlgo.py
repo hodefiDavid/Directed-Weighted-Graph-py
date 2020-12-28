@@ -73,6 +73,7 @@ class TestGraphAlgo(TestCase):
 
     def test_plot_graph(self):
         ga = GraphAlgo()
-        ga.load_from_json('../data/A5')
+        ga.load_from_json('../data/T0.json')
+        g = tdg.simple_graph_generate()
+        ga.graph = g
         ga.plot_graph()
-        # print(ga.get_graph())
