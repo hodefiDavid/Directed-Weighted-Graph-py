@@ -45,7 +45,7 @@ class DiGraph(GraphInterface):
     def add_node(self, node_id: int, pos: tuple = None) -> bool:
         if node_id in self.nodes:
             return False
-        self.nodes[node_id] = NodeData(node_id, pos)
+        self.nodes[node_id] = DiGraph.NodeData(node_id, pos)
         self.mode_count += 1
         return True
 
@@ -88,34 +88,32 @@ class DiGraph(GraphInterface):
     def __eq__(self, other):
         return self.edge_size == other.edge_size and self.nodes == other.nodes
 
+    class NodeData:
 
-class NodeData:
-    def __init__(self, node_id: int, pos: tuple = None):
-        self.id = node_id
-        self.tag = -1.0
-        self.remark = ""
-        self.node_out = dict()
-        self.node_in = dict()
-        self.position = pos
+        def __init__(self, node_id: int, pos: tuple = None):
+            self.id = node_id
+            self.tag = -1.0
+            self.remark = ""
+            self.node_out = dict()
+            self.node_in = dict()
+            self.position = pos
 
-    def add_out(self, node_id: int, weight: float):
-        self.node_out[node_id] = weight
+        def add_out(self, node_id: int, weight: float):
+            self.node_out[node_id] = weight
 
-    def add_in(self, node_id: int, weight: float):
-        self.node_in[node_id] = weight
+        def add_in(self, node_id: int, weight: float):
+            self.node_in[node_id] = weight
 
-    def __str__(self):
-        return '(' + str(self.id) + ')'
+        def __str__(self):
+            return '(' + str(self.id) + ')'
 
-    def __repr__(self):
-        return self.__str__()
+        def __repr__(self):
+            return self.__str__()
 
-    def __eq__(self, other):
-        return self.id == other.id and self.position == other.position \
-               and self.node_in == other.node_in and self.node_out == other.node_out
+        def __eq__(self, other):
+            return self.id == other.id and self.position == other.position \
+                   and self.node_in == other.node_in and self.node_out == other.node_out
 
-    def __lt__(self, other):
-        t = self.tag - other.tag
-        return t
-
-
+        def __lt__(self, other):
+            t = self.tag - other.tag
+            return t
