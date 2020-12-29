@@ -1,9 +1,10 @@
-from random import random, choice, seed
+from random import choice, seed
 
 import matplotlib.pyplot as plt
 
 
 class Gui:
+
     def __init__(self, g):
         self.graph = g
         self.set_pos()
@@ -11,9 +12,11 @@ class Gui:
         self.draw()
 
     def draw(self):
+        """
+        Draw and show the graph, nodes and edges.
+        """
         fig, ax = plt.subplots()
         fig.tight_layout()
-        # fig.set_size_inches((14, 7))
         fig.set_size_inches(10, 5)
 
         xs = []
@@ -45,12 +48,26 @@ class Gui:
         plt.show()
 
     def w2fx(self, position):
+        """
+        Converts from world position to frame position.
+        @param position: x node coordinate.
+        @return: normalized x location.
+        """
         return (position - self.x_range[0]) / (self.x_range[1] - self.x_range[0]) * 20
 
     def w2fy(self, position):
+        """
+        Converts from world position to frame position.
+        @param position: y node coordinate.
+        @return: normalized y location.
+        """
         return (position - self.y_range[0]) / (self.y_range[1] - self.y_range[0]) * 10
 
-    def graph_range(self):
+    def graph_range(self) -> tuple:
+        """
+        Finds the ranges of the graph, by finding minimum and maximum positions.
+        @return: (x_range, y_range)
+        """
         x_range = [float('inf'), float('-inf')]
         y_range = [float('inf'), float('-inf')]
         for i in self.graph.nodes.values():
@@ -67,6 +84,10 @@ class Gui:
         return x_range, y_range
 
     def set_pos(self):
+        """
+        Sets random position for every node without position.
+        This method scatters the positions of the nodes on the screen in a balanced way.
+        """
         v = self.graph.v_size()
         seed(1)
         curr_range = [i for i in range(2 * v)]
@@ -77,28 +98,3 @@ class Gui:
                 y = choice(curr_range)
                 curr_range.remove(y)
                 i.position = (x, y)
-
-# x = np.random.rand(1000) * 10
-# norm1 = x / np.linalg.norm(x)
-# norm2 = normalize(x[:, np.newaxis], axis=0).ravel()
-# np.all(norm1 == norm2)
-# ax.axis([32, 32, 36, 36])
-# xs = [i.position[0] for i in self.graph.nodes.values()]
-# xs = [self.w2fx(i.position[0]) for i in self.graph.nodes.values()]
-# ys = [i.position[1] for i in self.graph.nodes.values()]
-# ys = [self.w2fy(i.position[1]) for i in self.graph.nodes.values()]
-# def world2frame(self, position):
-#     x = (position[0] - self.x_range[0]) / (self.x_range[1] - self.x_range[0])
-#     y = (position[1] - self.y_range[0]) / (self.y_range[1] - self.y_range[0])
-#
-#     return x, y     # for i in self.graph.nodes.values():
-#         #     pos_src = self.world2frame(i.position)
-#         #     for j in i.node_out.keys():
-#         #         pos_dest = self.world2frame(self.graph.nodes[j].position)
-#         #         plt.arrow(pos_src[0], pos_src[1], pos_src[0]-pos_dest[0], pos_src[1]-pos_dest[1], head_width=0.05, length_includes_head=True)
-#         # print(i, pos_src, j, pos_dest)
-#         # for i in xs:
-#         #     for j in ys:
-#         #         plt.arrow(i, j, 4, 4, head_width=.3, length_includes_head=True)
-#
-#         # break  # nx.drawing.draw()

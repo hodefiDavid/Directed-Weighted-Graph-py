@@ -3,7 +3,7 @@ from heapq import heappush, heappop
 
 from DiGraph import *
 from GraphAlgoInterface import *
-from gui import Gui
+from Gui import Gui
 
 
 class GraphAlgo(GraphAlgoInterface):
