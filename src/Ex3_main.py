@@ -13,7 +13,7 @@ def check():
         {0: 0: score inf, 1: 1: score inf, 2: 2: score inf, 3: 3: score inf}
         {0: 1}
         {0: 1.1, 2: 1.3, 3: 10}
-        (3.4, [0, 1, 2, 3])
+        (3.4, [0, 1, 2, 3]) ==> mistake (only if remove edge (1,3))! need to be: (2.8, [(0), (1), (3)])
         [[0, 1], [2], [3]]
         (3.4, [0, 1, 2, 3])
         (inf, None)
@@ -61,7 +61,13 @@ def check1():
     g_algo = GraphAlgo()  # init an empty graph - for the GraphAlgo
     file = "../data/T0.json"
     g_algo.load_from_json(file)  # init a GraphAlgo from a json file
+    # g_algo.graph.remove_edge(1, 3)
+    print(g_algo.connected_component(0), 0)
+    print(g_algo.connected_component(1), 1)
+    print(g_algo.connected_component(2), 2)
+    print(g_algo.connected_component(3), 3)
     print(g_algo.connected_components())
+    # print(g_algo.graph)
     print(g_algo.shortest_path(0, 3))
     print(g_algo.shortest_path(3, 1))
     g_algo.save_to_json(file + '_saved')
@@ -77,6 +83,7 @@ def check2():
     g_algo.load_from_json(file)
     g_algo.get_graph().remove_edge(13, 14)
     g_algo.save_to_json(file + "_edited")
+    # print(g_algo.get_graph())
     dist, path = g_algo.shortest_path(1, 7)
     print(dist, path)
     dist, path = g_algo.shortest_path(47, 19)

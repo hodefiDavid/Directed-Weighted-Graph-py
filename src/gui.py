@@ -1,5 +1,4 @@
-from random import uniform, randrange, random, choice
-import numpy as np
+from random import random, choice, seed
 
 import matplotlib.pyplot as plt
 
@@ -69,6 +68,7 @@ class Gui:
 
     def set_pos(self):
         v = self.graph.v_size()
+        seed(1)
         curr_range = [i for i in range(2 * v)]
         for i in self.graph.nodes.values():
             if i.position is None:

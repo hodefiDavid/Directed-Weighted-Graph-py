@@ -65,7 +65,7 @@ class GraphAlgo(GraphAlgoInterface):
 
         self.set_tag_dist(id1)
         if dest.tag == -1:
-            return -1, []
+            return float("inf"), None
 
         lst = []
         lst.insert(0, dest)
@@ -105,11 +105,12 @@ class GraphAlgo(GraphAlgoInterface):
 
         self.set_tag_dist(id1)
         lst = [n for n in self.graph.nodes.values() if n.tag != -1]
+        res = []
         for n in lst:
-            if self.shortest_path(n.id, id1)[0] == -1:
-                lst.remove(n)
-        lst.sort(key=lambda x: x.id)
-        return lst
+            if self.shortest_path(n.id, id1)[0] != float('inf'):
+                res.append(n)
+        res.sort(key=lambda x: x.id)
+        return res
 
     def connected_components(self) -> List[list]:
         lst = []
