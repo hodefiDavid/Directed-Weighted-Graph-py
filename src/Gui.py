@@ -24,7 +24,7 @@ class Gui:
         labels = []
 
         for i in self.graph.nodes.values():
-            x_src = self.w2fy(i.position[0])
+            x_src = self.w2fx(i.position[0])
             y_src = self.w2fy(i.position[1])
             xs.append(x_src)
             ys.append(y_src)
@@ -32,7 +32,7 @@ class Gui:
 
             for node_out in i.node_out.keys():
                 n = self.graph.nodes[node_out]
-                x_dest = self.w2fy(n.position[0])
+                x_dest = self.w2fx(n.position[0])
                 y_dest = self.w2fy(n.position[1])
 
                 plt.arrow(x_src, y_src, -(x_src - x_dest), -(y_src - y_dest), head_width=0.28,

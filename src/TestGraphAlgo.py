@@ -75,9 +75,9 @@ class TestGraphAlgo(TestCase):
 
     def test_plot_graph(self):
         ga = GraphAlgo()
-        ga.load_from_json('../data/A4')
+        ga.load_from_json('../data/A2')
         g = tdg.simple_graph_generate()
-        ga.graph = g
+        # ga.graph = g
         ga.plot_graph()
 
     def test_big_path(self):
