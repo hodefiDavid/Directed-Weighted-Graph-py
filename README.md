@@ -9,7 +9,7 @@ This Python project, also contains comparisons between this graph, and a Java pr
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
-Java JDK-15
+python 3 
 
 ### Installing
 - Clone that project to your workspace directory:\
