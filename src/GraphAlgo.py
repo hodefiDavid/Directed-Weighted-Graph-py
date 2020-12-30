@@ -61,21 +61,21 @@ class GraphAlgo(GraphAlgoInterface):
         dest = self.graph.nodes[id2]
 
         if id1 == id2:
-            return 0, [src]
+            return 0, [src.id]
 
         self.set_tag_dist(id1)
         if dest.tag == -1:
             return float("inf"), None
 
         lst = []
-        lst.insert(0, dest)
+        lst.insert(0, dest.id)
         curr = lst[0]
 
-        while curr != src:
-            for i, w in curr.node_in.items():
+        while curr != src.id:
+            for i, w in self.graph.nodes[curr].node_in.items():
                 n = self.graph.nodes[i]
-                if n.tag + w == curr.tag:
-                    lst.insert(0, n)
+                if n.tag + w == self.graph.nodes[curr].tag:
+                    lst.insert(0, n.id)
                     curr = lst[0]
                     break
 
@@ -98,7 +98,7 @@ class GraphAlgo(GraphAlgoInterface):
     def init_tags(self):
         for i in self.graph.nodes.values():
             i.tag = -1
-
+    # we return nodes - should be returning node.id
     def connected_component(self, id1: int) -> list:
         if id1 not in self.graph.nodes.keys():
             return None
@@ -108,8 +108,11 @@ class GraphAlgo(GraphAlgoInterface):
         res = []
         for n in lst:
             if self.shortest_path(n.id, id1)[0] != float('inf'):
-                res.append(n)
-        res.sort(key=lambda x: x.id)
+                # res.append(n)
+                res.append(n.id)
+
+        # res.sort(key=lambda x: x.id)
+        res.sort()
         return res
 
     def connected_components(self) -> List[list]:
@@ -122,6 +125,7 @@ class GraphAlgo(GraphAlgoInterface):
                     flag = False
             if flag:
                 lst.append(temp)
+
         return lst
 
     def plot_graph(self) -> None:

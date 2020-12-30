@@ -101,10 +101,10 @@ class TestDiGraph(TestCase):
         self.assertTrue(g.remove_edge(3, 7))
         self.assertEqual(edges_size - 1, g.e_size())
 
-    def test_million_nodes(self):
+    def test_100k_nodes(self):
         start = time()
         g = DiGraph()
-        for i in range(10 ** 6):
+        for i in range(10 ** 5):
             g.add_node(i)
         for i in range(g.v_size()):
             for j in range(10):

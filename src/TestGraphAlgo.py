@@ -26,41 +26,39 @@ class TestGraphAlgo(TestCase):
     def test_shortest_path(self):
         g = tdg.simple_graph_generate()
         ga = GraphAlgo(g)  # 1-7 --3
-        expected_lst = [g.nodes[1], g.nodes[2], g.nodes[3], g.nodes[7]]
+        # expected_lst = [g.nodes[1], g.nodes[2], g.nodes[3], g.nodes[7]]
+        expected_lst = [1, 2, 3, 7]
         self.assertEqual((3.0, expected_lst), ga.shortest_path(1, 7))
         self.assertEqual((-1, None), ga.shortest_path(1, 88))
-        expected_lst = [g.nodes[3], g.nodes[7], g.nodes[8], g.nodes[9]]
+        # expected_lst = [g.nodes[3], g.nodes[7], g.nodes[8], g.nodes[9]]
+        expected_lst = [3, 7, 8, 9]
         self.assertEqual((9, expected_lst), ga.shortest_path(3, 9))
 
     def test_connected_component(self):
         g = tdg.simple_graph_generate()
         ga = GraphAlgo(g)
-        lst = [g.nodes[0]]
+        lst = [0]
         self.assertEqual(lst, ga.connected_component(0))
 
-        lst = [n for n in g.nodes.values() if n.id != 0]
+        lst = [n for n in g.nodes.keys() if n != 0]
         self.assertEqual(lst, ga.connected_component(1))
 
-        lst.remove(g.nodes[6])
-        lst.remove(g.nodes[2])
-        lst.remove(g.nodes[4])
-        lst.remove(g.nodes[8])
+        lst.remove(6)
+        lst.remove(2)
+        lst.remove(4)
+        lst.remove(8)
         g.remove_node(8)
-
-        self.assertEqual(lst, ga.connected_component(1))
-
-        lst.remove(g.nodes[5])
-        lst.remove(g.nodes[7])
-        lst.remove(g.nodes[3])
+        lst.remove(5)
+        lst.remove(7)
+        lst.remove(3)
         g.remove_node(2)
         self.assertEqual(lst, ga.connected_component(1))
 
     def test_connected_components(self):
         g = tdg.simple_graph_generate()
         ga = GraphAlgo(g)
-        lst = [[g.nodes[0]], [n for n in g.nodes.values() if n.id != 0]]
+        lst = [[0], [n for n in g.nodes.keys() if n != 0]]
         lst1 = ga.connected_components()
-
         self.assertEqual(lst, lst1)
         g.remove_node(2)
         lst1 = ga.connected_components()
@@ -73,7 +71,7 @@ class TestGraphAlgo(TestCase):
         g.add_edge(8, 2, 2.3)
         lst1 = ga.connected_components()
 
-        self.assertNotEqual(lst, lst1)
+        self.assertEqual(lst, lst1)
 
     def test_plot_graph(self):
         ga = GraphAlgo()
@@ -91,10 +89,10 @@ class TestGraphAlgo(TestCase):
         path = {randint(0, v - 1) for _ in range(path_size)}
         expected_weight = 0
         dest = src = prev_n = path.pop()
-        expected_path = [g.nodes[src]]
+        expected_path = [src]
         while len(path) > 0:
             next_n = path.pop()
-            expected_path.append(g.nodes[next_n])
+            expected_path.append(next_n)
             weight = uniform(0, 1)
             g.add_edge(prev_n, next_n, weight)
             expected_weight += weight
