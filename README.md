@@ -3,7 +3,8 @@
 This project base on directed weighted graph and including algorithms for finding the shortest path from node to node (based on Dijkstra’s Shortest Path Algorithm).\
 This Python project, also contains comparisons between this graph, and a Java project that also contains [Directed_Weighted_Graph](https://github.com/davidfeust/Directed_Weighted_Graph.git) DS. In addition, there is a comparison to the [NetworkX](https://networkx.org/) module.
 
-![img](https://user-images.githubusercontent.com/73194236/103314643-53360e00-4a2c-11eb-88c2-ba5d8720743e.png)
+![image](https://user-images.githubusercontent.com/73194236/103318170-2e469880-4a36-11eb-9c4a-d19a08ae33aa.png)
+
 
 ## Getting Started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
