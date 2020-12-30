@@ -7,7 +7,9 @@ from TestDiGraph import TestDiGraph as tdg
 
 class TestGraphAlgo(TestCase):
     def test_get_graph(self):
-        self.fail()
+        g = tdg.simple_graph_generate()
+        ga = GraphAlgo(g)
+        self.assertEqual(g, ga.get_graph())
 
     def test_load_and_save_from_json(self):
         file_path = '../data/A5'
