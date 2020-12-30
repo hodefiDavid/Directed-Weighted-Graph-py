@@ -98,6 +98,7 @@ class GraphAlgo(GraphAlgoInterface):
     def init_tags(self):
         for i in self.graph.nodes.values():
             i.tag = -1
+
     # we return nodes - should be returning node.id
     def connected_component(self, id1: int) -> list:
         if id1 not in self.graph.nodes.keys():

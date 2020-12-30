@@ -110,11 +110,11 @@ class TestDiGraph(TestCase):
             g.add_node(i)
         for i in range(g.v_size()):
             for j in range(10):
-                g.add_edge(g.v_size() - i + j, i,2.2 )#100*random.uniform(0, 1.1)
+                g.add_edge(g.v_size() - i + j, i, 2.2)  # 100*random.uniform(0, 1.1)
         for i in range(60):
             g.add_edge(i, i + 20, 1.1)
         end = time()
-        GraphAlgo.GraphAlgo(g).save_to_json("../data/10kG.json")
+        # GraphAlgo.GraphAlgo(g).save_to_json("../data/10kG.json")
         self.assertTrue((end - start) < 25)
 
     @staticmethod
