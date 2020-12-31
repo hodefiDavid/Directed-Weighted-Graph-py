@@ -56,7 +56,7 @@ class GraphAlgo(GraphAlgoInterface):
 
     def shortest_path(self, id1: int, id2: int) -> (float, list):
         if id1 not in self.graph.nodes.keys() or id2 not in self.graph.nodes.keys():
-            return -1, None
+            return -1, []
         src = self.graph.nodes[id1]
         dest = self.graph.nodes[id2]
 
@@ -99,34 +99,65 @@ class GraphAlgo(GraphAlgoInterface):
         for i in self.graph.nodes.values():
             i.tag = -1
 
-    # we return nodes - should be returning node.id
     def connected_component(self, id1: int) -> list:
         if id1 not in self.graph.nodes.keys():
             return None
 
-        self.set_tag_dist(id1)
-        lst = [n for n in self.graph.nodes.values() if n.tag != -1]
+        self.init_tags()
+        num = 0
+        self.set_connected_tag(self.graph.nodes[id1], num)
+        ll = [id1]
+        for i in self.graph.nodes.values():
+            if i.tag == 0:
+                ll.append(i.id)
         res = []
-        for n in lst:
-            if self.shortest_path(n.id, id1)[0] != float('inf'):
-                # res.append(n)
-                res.append(n.id)
-
-        # res.sort(key=lambda x: x.id)
-        res.sort()
+        for i in ll:
+            num += 1
+            if self.connect_to_src(id1, i, num):
+                res.append(i)
         return res
 
-    def connected_components(self) -> List[list]:
-        lst = []
-        for n in self.graph.nodes.values():
-            temp = self.connected_component(n.id)
-            flag = True
-            for i in lst:
-                if self.list_equals(i, temp):
-                    flag = False
-            if flag:
-                lst.append(temp)
+    def set_connected_tag(self, src: DiGraph.NodeData, num):
+        pq = []
+        src.tag = -2
+        heappush(pq, src)
+        while len(pq) > 0:
+            temp = heappop(pq)
+            for i in temp.node_out.keys():
+                t_node = self.graph.nodes[i]
+                if t_node.tag == -1:
+                    t_node.tag = num
+                    heappush(pq, t_node)
 
+    def connect_to_src(self, src: int, node: int, num: int):
+        if src == node:
+            return True
+        lst = []
+        node_ = self.graph.nodes[node]
+        node_.tag = num
+        lst.append(node_)
+
+        while len(lst) > 0:
+            temp = lst.pop(0)
+            for i in temp.node_out.keys():
+                t_node = self.graph.nodes[i]
+                if t_node.tag != num:
+                    if t_node.tag == -2:
+                        node_.tag = -2
+                        return True
+                    t_node.tag = num
+                    lst.append(t_node)
+        return False
+
+    def connected_components(self) -> List[list]:
+        set_ = set()
+        lst = []
+
+        for i in self.graph.nodes.keys():
+            if i not in set_:
+                ll = self.connected_component(i)
+                set_ = set_.union(ll)
+                lst.append(ll)
         return lst
 
     def plot_graph(self) -> None:
