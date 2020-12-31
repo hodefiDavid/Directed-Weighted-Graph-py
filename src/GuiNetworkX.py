@@ -1,7 +1,10 @@
-import json
-
 import matplotlib.pyplot as plt
 import networkx as nx
+
+"""
+This file contains a number of functions that aim to make the necessary adjustments,
+to display a networkx graph from the given json files
+"""
 
 
 def graph_range(locations: dict) -> tuple:
@@ -46,6 +49,11 @@ def w2fy(y_range, position):
 
 
 def convert_pos(loc_world):
+    """
+    Converts loc_world dictionary to loc_frame dictionary, after converts each position.
+    @param loc_world: a dictionary contains world position as values, and node id as keys.
+    @return: a dictionary with id node as keys and position (x, y) as values.
+    """
     x, y = graph_range(loc_world)
     loc_frame = {}
     for k, l in loc_world.items():
@@ -54,42 +62,14 @@ def convert_pos(loc_world):
 
 
 def plot(gx, loc_w):
+    """
+    Plots networkx graph.
+    @param gx: nx.DiGraph
+    @param loc_w: a dictionary with id node as keys and position (x, y) as values.
+    """
     loc = convert_pos(loc_w)
     nx.draw(gx, loc)
     nx.draw_networkx_nodes(gx, loc, cmap=plt.get_cmap('jet'), node_size=50)
     nx.draw_networkx_labels(gx, loc)
     nx.draw_networkx_edges(gx, loc, edge_color='b', arrows=True)
     plt.show()
-
-# with open('../data/A5', 'r') as file:
-#     data = json.load(file)
-#     g = nx.DiGraph()
-#     loc_w = {}
-#     for i in data['Nodes']:
-#         if 'pos' in i.keys():
-#             str_lst = i['pos'].split(',')
-#             pos = (float(str_lst[0]), float(str_lst[1]))
-#             g.add_node(i['id'])
-#             loc_w[i['id']] = pos
-#
-#         else:
-#             g.add_node(i['id'])
-#     for i in data['Edges']:
-#         g.add_edge(i['src'], i['dest'])
-
-
-# g.remove_edge(13, 14)
-# print([i for i in nx.connected_components(g)])
-
-# nx.draw(g, loc)
-
-# pos = nx.spring_layout(g)
-# pos = nx.random_layout(g)
-# pos = nx.shell_layout(g)
-# pos = nx.planar_layout(g)
-
-
-# nx.draw_networkx_nodes(g, loc, cmap=plt.get_cmap('jet'), node_size=50)
-# nx.draw_networkx_labels(g, loc)
-# nx.draw_networkx_edges(g, loc, edge_color='b', arrows=True)
-# plt.show()

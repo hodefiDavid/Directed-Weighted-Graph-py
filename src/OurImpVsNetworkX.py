@@ -7,8 +7,19 @@ from GraphAlgo import *
 
 
 class MyTestCase(unittest.TestCase):
+    """
+    This unittest class, contains set of comparison test,
+    between our implementation of directed weighted graph, to networkx module implementation.
+    The tests checks:
+    1. Comparing results- to check correctness.
+    2. Comparison of running times - to test efficiency.
+    """
 
-    def init(self, data_file_js):
+    def init(self, data_file_js: str):
+        """
+        init networkX graph, and our DiGraph from the given json file.
+        @param data_file_js: path of JSON file
+        """
         self.data_file = data_file_js
         self.ga = GraphAlgo()
         self.ga.load_from_json(data_file_js)
@@ -33,9 +44,12 @@ class MyTestCase(unittest.TestCase):
         return nx_res, g_res
 
     def test_built_times(self):
+        """
+        This test compare building of big graph, and measures running times.
+        """
         start_time = time.time()
-        graphA = GraphAlgo()
-        graphA.load_from_json("../data/10kG.json")
+        graph = GraphAlgo()
+        graph.load_from_json("../data/10kG.json")
         end_time = time.time()
         print('Our:', "test_built_times" + "(10kG.json)", ':', end_time - start_time)
 
@@ -45,6 +59,9 @@ class MyTestCase(unittest.TestCase):
         print('NX:', "test_built_times" + "(10kG.json)", ':', end_time - start_time)
 
     def test_save(self):
+        """
+        This test compare saving of big graph to Json file, and measures running times.
+        """
         self.init("../data/10kG.json")
         start_time = time.time()
         dict_jx = nx.node_link_data(self.gx, dict(source='src', target='dest', name='id', key='key', link='links'))
@@ -59,6 +76,10 @@ class MyTestCase(unittest.TestCase):
         print('Our:', "save_test_time" + "(10kG.json)", ':', end_time - start_time)
 
     def test_shortest_path(self):
+        """
+        This test compare calculation of the shortest path between 2 nodes
+        on big graph, compares the results and measures running times.
+        """
         self.init('../data/1kG.json')
         nx_res, g_res = self.compare_times(nx.dijkstra_path, self.ga.shortest_path, (0, 11))
         self.assertEqual(g_res[1], nx_res)
@@ -68,6 +89,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(g_res[0], nx_res)
 
     def test_connected_component(self):
+        """
+        This test compare calculation of the connected component of node,
+        compares the results and measures running times.
+        """
         self.init('../data/A5')
         nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (1,))
         self.assertEqual(nx_res, set(g_res))
@@ -77,6 +102,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(nx_res, set(g_res))
 
     def test_connected_components(self):
+        """
+        This test compare calculation of the connected components of given graph,
+        compares the results and measures running times.
+        """
         self.init('../data/A5')
         nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
         for i, s in enumerate(nx_res):
@@ -87,10 +116,13 @@ class MyTestCase(unittest.TestCase):
         for i, s in enumerate(nx_res):
             self.assertEqual(s, set(g_res[i]))
 
-    def get_strongly_cc(self, gx, node):
-        """ get storngly connected component of node- taken from:
-        https: // stackoverflow.com / questions / 47283612 / networkx - node - connected - component -
-        not -implemented -for -directed - type"""
+    @staticmethod
+    def get_strongly_cc(gx, node):
+        """
+        get strongly connected component of node
+        taken from:
+        https://stackoverflow.com/questions/47283612/networkx-node-connected-component-not-implemented-for-directed-type
+        """
         for cc in nx.strongly_connected_components(gx):
             if node in cc:
                 return cc
@@ -99,6 +131,9 @@ class MyTestCase(unittest.TestCase):
 
     @unittest.skip
     def test_plot(self):
+        """
+        Shows our plot graph, and networkx plot graph together.
+        """
         self.init('../data/A5_edited')
         loc_w = self.load_nx_from_json(self.data_file)
         t1 = threading.Thread(target=gnx.plot, args=(self.gx, loc_w))
@@ -107,6 +142,11 @@ class MyTestCase(unittest.TestCase):
         t2.start()
 
     def load_nx_from_json(self, data_file_js):
+        """
+        Loads and build nx.DiGraph, from json file.
+        Init self.gx to be this graph.
+        @param data_file_js: path of json file.
+        """
         with open(data_file_js, 'r') as file:
             data = json.load(file)
             self.gx = nx.DiGraph()

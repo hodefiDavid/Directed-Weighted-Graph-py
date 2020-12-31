@@ -174,7 +174,7 @@ class DiGraph(GraphInterface):
 
         def add_out(self, node_id: int, weight: float):
             """
-            Add new edge from this node to node_id, with the giving weight.
+            Add new edge from this node to node_id, with the given weight.
             @param node_id: The end node of the edge.
             @param weight: The weight of the edge.
             """
@@ -182,7 +182,7 @@ class DiGraph(GraphInterface):
 
         def add_in(self, node_id: int, weight: float):
             """
-            Add new edge from node_id to this node, with the giving weight.
+            Add new edge from node_id to this node, with the given weight.
             @param node_id: The start node of the edge.
             @param weight: The weight of the edge.
             """

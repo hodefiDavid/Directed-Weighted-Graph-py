@@ -1,8 +1,6 @@
-import random
 from time import time
 from unittest import TestCase
 
-import GraphAlgo
 from DiGraph import *
 
 
