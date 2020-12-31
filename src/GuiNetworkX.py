@@ -10,7 +10,7 @@ to display a networkx graph from the given json files
 def graph_range(locations: dict) -> tuple:
     """
     Finds the ranges of the graph, by finding minimum and maximum positions.
-    @return: (x_range, y_range)
+    :return: (x_range, y_range)
     """
     x_range = [float('inf'), float('-inf')]
     y_range = [float('inf'), float('-inf')]
@@ -31,9 +31,9 @@ def graph_range(locations: dict) -> tuple:
 def w2fx(x_range, position):
     """
     Converts from world position to frame position.
-    @param x_range:
-    @param position: x node coordinate.
-    @return: normalized x location.
+    :param x_range:
+    :param position: x node coordinate.
+    :return: normalized x location.
     """
     return (position - x_range[0]) / (x_range[1] - x_range[0]) * 20
 
@@ -41,9 +41,9 @@ def w2fx(x_range, position):
 def w2fy(y_range, position):
     """
     Converts from world position to frame position.
-    @param y_range:
-    @param position: y node coordinate.
-    @return: normalized y location.
+    :param y_range:
+    :param position: y node coordinate.
+    :return: normalized y location.
     """
     return (position - y_range[0]) / (y_range[1] - y_range[0]) * 10
 
@@ -51,8 +51,8 @@ def w2fy(y_range, position):
 def convert_pos(loc_world):
     """
     Converts loc_world dictionary to loc_frame dictionary, after converts each position.
-    @param loc_world: a dictionary contains world position as values, and node id as keys.
-    @return: a dictionary with id node as keys and position (x, y) as values.
+    :param loc_world: a dictionary contains world position as values, and node id as keys.
+    :return: a dictionary with id node as keys and position (x, y) as values.
     """
     x, y = graph_range(loc_world)
     loc_frame = {}
@@ -64,8 +64,8 @@ def convert_pos(loc_world):
 def plot(gx, loc_w):
     """
     Plots networkx graph.
-    @param gx: nx.DiGraph
-    @param loc_w: a dictionary with id node as keys and position (x, y) as values.
+    :param gx: nx.DiGraph
+    :param loc_w: a dictionary with id node as keys and position (x, y) as values.
     """
     loc = convert_pos(loc_w)
     nx.draw(gx, loc)

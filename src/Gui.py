@@ -50,23 +50,23 @@ class Gui:
     def w2fx(self, position):
         """
         Converts from world position to frame position.
-        @param position: x node coordinate.
-        @return: normalized x location.
+        :param position: x node coordinate.
+        :return: normalized x location.
         """
         return (position - self.x_range[0]) / (self.x_range[1] - self.x_range[0]) * 20
 
     def w2fy(self, position):
         """
         Converts from world position to frame position.
-        @param position: y node coordinate.
-        @return: normalized y location.
+        :param position: y node coordinate.
+        :return: normalized y location.
         """
         return (position - self.y_range[0]) / (self.y_range[1] - self.y_range[0]) * 10
 
     def graph_range(self) -> tuple:
         """
         Finds the ranges of the graph, by finding minimum and maximum positions.
-        @return: (x_range, y_range)
+        :return: (x_range, y_range)
         """
         x_range = [float('inf'), float('-inf')]
         y_range = [float('inf'), float('-inf')]

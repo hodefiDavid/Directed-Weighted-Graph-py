@@ -16,14 +16,14 @@ class DiGraph(GraphInterface):
     def v_size(self) -> int:
         """
         Returns the length of nodes field.
-        @return: the number of vertices in this graph.
+        :return: the number of vertices in this graph.
         """
         return len(self.nodes)
 
     def e_size(self) -> int:
         """
         Returns the number of edges in this graph
-        @return: The number of edges in this graph
+        :return: The number of edges in this graph
         """
         return self.edge_size
 
@@ -31,7 +31,7 @@ class DiGraph(GraphInterface):
         """
         Returns a dictionary of all the nodes in the Graph,
         each node is represented using a pair (key, NodeData)
-        @return: dict contains all the nodes in the graph.
+        :return: dict contains all the nodes in the graph.
         """
         return self.nodes
 
@@ -39,8 +39,8 @@ class DiGraph(GraphInterface):
         """
         Return a dictionary of all the nodes connected to (into) node_id,
         each node is represented using a pair (key, weight)
-        @param id1: node id
-        @return: dictionary contains nodes connected to id1
+        :param id1: node id
+        :return: dictionary contains nodes connected to id1
         """
         return self.nodes[id1].node_in
 
@@ -48,8 +48,8 @@ class DiGraph(GraphInterface):
         """
         Return a dictionary of all the nodes connected from node_id,
         each node is represented using a pair (key, weight)
-        @param id1: node id
-        @return: dictionary contains nodes connected from id1
+        :param id1: node id
+        :return: dictionary contains nodes connected from id1
         """
         return self.nodes[id1].node_out
 
@@ -57,7 +57,7 @@ class DiGraph(GraphInterface):
         """
         Returns the current version of this graph,
         on every change in the graph state - the MC should be increased.
-        @return: The current version of this graph.
+        :return: The current version of this graph.
         """
         return self.mode_count
 
@@ -66,10 +66,10 @@ class DiGraph(GraphInterface):
         Adds an edge to the graph.
         If the edge already exists or one of the nodes dose not exists the functions will do nothing.
         This method adds id2 nodes to node_out of id1, and id1 to node_in of id2.
-        @param id1: The start node of the edge.
-        @param id2: The end node of the edge.
-        @param weight: The weight of the edge.
-        @return: True if the edge was added successfully, False o.w.
+        :param id1: The start node of the edge.
+        :param id2: The end node of the edge.
+        :param weight: The weight of the edge.
+        :return: True if the edge was added successfully, False o.w.
         """
         if id1 not in self.nodes or id2 not in self.nodes or id1 == id2:
             return False
@@ -91,9 +91,9 @@ class DiGraph(GraphInterface):
         Adds a node to the graph.
         If the node id already exists the node will not be added.
         This method adds new NodeData to the nodes dictionary.
-        @param node_id: The node ID.
-        @param pos: The position of the node.
-        @return: True if the node was added successfully, False o.w.
+        :param node_id: The node ID.
+        :param pos: The position of the node.
+        :return: True if the node was added successfully, False o.w.
 
         """
         if node_id in self.nodes:
@@ -108,8 +108,8 @@ class DiGraph(GraphInterface):
         If the node id does not exists the function will do nothing.
         This method remove the node from nodes dictionary,
         and also remove all in and out edges.
-        @param node_id: The node ID.
-        @return: True if the node was removed successfully, False o.w.
+        :param node_id: The node ID.
+        :return: True if the node was removed successfully, False o.w.
         """
         if node_id not in self.nodes:
             return False
@@ -130,9 +130,9 @@ class DiGraph(GraphInterface):
         """
         Removes an edge from the graph.
         If such an edge does not exists the function will do nothing.
-        @param node_id1: The start node of the edge.
-        @param node_id2: The end node of the edge.
-        @return: True if the edge was removed successfully, False o.w.
+        :param node_id1: The start node of the edge.
+        :param node_id2: The end node of the edge.
+        :return: True if the edge was removed successfully, False o.w.
 
         """
         if node_id1 not in self.nodes or node_id2 not in self.nodes \
@@ -175,16 +175,16 @@ class DiGraph(GraphInterface):
         def add_out(self, node_id: int, weight: float):
             """
             Add new edge from this node to node_id, with the given weight.
-            @param node_id: The end node of the edge.
-            @param weight: The weight of the edge.
+            :param node_id: The end node of the edge.
+            :param weight: The weight of the edge.
             """
             self.node_out[node_id] = weight
 
         def add_in(self, node_id: int, weight: float):
             """
             Add new edge from node_id to this node, with the given weight.
-            @param node_id: The start node of the edge.
-            @param weight: The weight of the edge.
+            :param node_id: The start node of the edge.
+            :param weight: The weight of the edge.
             """
             self.node_in[node_id] = weight
 

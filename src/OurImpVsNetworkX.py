@@ -18,7 +18,7 @@ class MyTestCase(unittest.TestCase):
     def init(self, data_file_js: str):
         """
         init networkX graph, and our DiGraph from the given json file.
-        @param data_file_js: path of JSON file
+        :param data_file_js: path of JSON file
         """
         self.data_file = data_file_js
         self.ga = GraphAlgo()
@@ -28,9 +28,9 @@ class MyTestCase(unittest.TestCase):
     def compare_times(self, nxf, gf, args=()):
         """
         This method is aid method for comparing times between the various functions.
-        @param nxf: networkx function.
-        @param gf: our function.
-        @param args: arguments.
+        :param nxf: networkx function.
+        :param gf: our function.
+        :param args: arguments.
         """
         start_time = time.time()
         nx_res = nxf(self.gx, *args)
@@ -145,7 +145,7 @@ class MyTestCase(unittest.TestCase):
         """
         Loads and build nx.DiGraph, from json file.
         Init self.gx to be this graph.
-        @param data_file_js: path of json file.
+        :param data_file_js: path of json file.
         """
         with open(data_file_js, 'r') as file:
             data = json.load(file)
