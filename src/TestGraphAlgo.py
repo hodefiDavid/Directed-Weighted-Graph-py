@@ -1,4 +1,5 @@
 import random
+import unittest
 from random import randint, uniform
 from unittest import TestCase
 
@@ -77,6 +78,7 @@ class TestGraphAlgo(TestCase):
                     flag = True
             self.assertTrue(flag)
 
+    @unittest.skip
     def test_plot_graph(self):
         ga = GraphAlgo()
         ga.load_from_json('../data/A2')
@@ -106,8 +108,5 @@ class TestGraphAlgo(TestCase):
             g.add_edge(randint(0, v), randint(0, v), expected_weight * uniform(1, 3))
         ga = GraphAlgo(g)
         ga_shortest_path = ga.shortest_path(src, dest)
-        print(src, dest)
-        # ga.save_to_json('Big_path.json')
-        # self.assertEqual(expected_path, ga_shortest_path[1])
-        print(expected_weight)
+        self.assertEqual(expected_path, ga_shortest_path[1])
         self.assertEqual(expected_weight, ga_shortest_path[0])

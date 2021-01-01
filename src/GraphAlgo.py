@@ -5,6 +5,7 @@ from GraphAlgoInterface import *
 from Gui import Gui
 from queue import PriorityQueue
 
+
 # from Queue import PriorityQueue
 
 
@@ -127,14 +128,14 @@ class GraphAlgo(GraphAlgoInterface):
         :param id1: the source id
         :param id2: the destantion id
         """
-        p_queue = []
+        p_queue = PriorityQueue()
         path = {id1: None}
         self.init_tags()
         curr = self.graph.nodes[id1]
         curr.tag = 0
-        heappush(p_queue, curr)
-        while len(p_queue) > 0:
-            curr = heappop(p_queue)
+        p_queue.put((curr.tag, curr))
+        while p_queue.not_empty:
+            curr = p_queue.get()[1]
             if curr.id == id2:
                 return path
 
@@ -145,10 +146,8 @@ class GraphAlgo(GraphAlgoInterface):
             for nodeIn_id, w in curr.node_out.items():
                 n = self.graph.nodes[nodeIn_id]
                 if n.tag == -1 or n.tag > curr.tag + w:
-                    if n in p_queue:
-                        p_queue.remove(n)
                     n.tag = curr.tag + w
-                    heappush(p_queue, n)
+                    p_queue.put((n.tag, n))
                     path[n.id] = curr.id
 
         return path

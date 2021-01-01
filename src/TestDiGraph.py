@@ -1,6 +1,7 @@
 from time import time
 from unittest import TestCase
 
+import GraphAlgo
 from DiGraph import *
 
 
@@ -112,7 +113,7 @@ class TestDiGraph(TestCase):
         for i in range(60):
             g.add_edge(i, i + 20, 1.1)
         end = time()
-        # GraphAlgo.GraphAlgo(g).save_to_json("../data/10kG.json")
+        # GraphAlgo.GraphAlgo(g).save_to_json("../data/1M.json")
         self.assertTrue((end - start) < 25)
 
     @staticmethod
