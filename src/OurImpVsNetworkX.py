@@ -80,7 +80,7 @@ class MyTestCase(unittest.TestCase):
         This test compare calculation of the shortest path between 2 nodes
         on big graph, compares the results and measures running times.
         """
-        self.init('../data/1kG.json')
+        self.init('../data/10kG.json')
         nx_res, g_res = self.compare_times(nx.dijkstra_path, self.ga.shortest_path, (0, 11))
         self.assertEqual(g_res[1], nx_res)
         nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 500))

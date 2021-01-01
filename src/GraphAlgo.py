@@ -105,7 +105,8 @@ class GraphAlgo(GraphAlgoInterface):
                 if n.tag + w == self.graph.nodes[curr].tag:
                     lst.insert(0, n.id)
                     curr = lst[0]
-                    break
+                    if curr == id2:
+                        return dest.tag, lst
 
         return dest.tag, lst
 
