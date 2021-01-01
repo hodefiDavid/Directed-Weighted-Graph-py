@@ -199,7 +199,7 @@ class DiGraph(GraphInterface):
                    and self.node_in == other.node_in and self.node_out == other.node_out
 
         def __lt__(self, other):
-            t = self.tag - other.tag
+            t = other.tag - self.tag
             return t
 
         def __hash__(self):

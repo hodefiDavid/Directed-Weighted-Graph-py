@@ -91,43 +91,68 @@ class GraphAlgo(GraphAlgoInterface):
         if id1 == id2:
             return 0, [src.id]
 
-        self.set_tag_dist(id1)
+        path = self.set_tag_dist(id1, id2)
         if dest.tag == -1:
             return float("inf"), None
+        # 1 2 3 7
+        curr = id2
+        lst = [id2]
+        while curr != id1:
+            temp = path[curr]
+            lst.insert(0, temp)
+            curr = temp
 
-        lst = []
-        lst.insert(0, dest.id)
-        curr = lst[0]
+        return self.graph.nodes[id2].tag, lst
 
-        while curr != src.id:
-            for i, w in self.graph.nodes[curr].node_in.items():
-                n = self.graph.nodes[i]
-                if n.tag + w == self.graph.nodes[curr].tag:
-                    lst.insert(0, n.id)
-                    curr = lst[0]
-                    if curr == id2:
-                        return dest.tag, lst
+        # lst.insert(0, dest.id)
+        # curr = lst[0]
 
-        return dest.tag, lst
+        # while curr != src.id:
+        #     for i, w in self.graph.nodes[curr].node_in.items():
+        #         n = self.graph.nodes[i]
+        #         if n.tag + w == self.graph.nodes[curr].tag:
+        #             lst.insert(0, n.id)
+        #             curr = lst[0]
+        #             break
 
-    def set_tag_dist(self, id1):
+        # return dest.tag, lst
+
+    def set_tag_dist(self, id1, id2):
         """
         "color" all the nosdes that acn be reached from id1
         :param self: getting the self of this class
         :param id1: the source id
+        :param id2: the destantion id
         """
         p_queue = []
+        path = {id1: None}
         self.init_tags()
         curr = self.graph.nodes[id1]
         curr.tag = 0
         heappush(p_queue, curr)
         while len(p_queue) > 0:
+            if len(p_queue) > 0:
+                print(min(p_queue, key=lambda x: x.tag).tag , end="  ")
             curr = heappop(p_queue)
+            # print(curr.tag)
+            if len(p_queue) > 0:
+                # print(curr.tag , min(p_queue, key=lambda x: x.tag).tag)
+                print(curr.tag)
+
+            if curr.id == id2:
+                return path
+
+            # if self.graph.nodes[id2].tag != -1:
+            #     if curr.tag >= self.graph.nodes[id2].tag:
+            #         break
+
             for nodeIn_id, w in curr.node_out.items():
                 n = self.graph.nodes[nodeIn_id]
                 if n.tag == -1 or n.tag > curr.tag + w:
                     n.tag = curr.tag + w
                     heappush(p_queue, n)
+                    path[n.id] = curr.id
+        return path
 
     def init_tags(self):
         """

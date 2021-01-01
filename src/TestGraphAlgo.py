@@ -1,3 +1,4 @@
+import random
 from random import randint, uniform
 from unittest import TestCase
 
@@ -84,6 +85,7 @@ class TestGraphAlgo(TestCase):
         ga.plot_graph()
 
     def test_big_path(self):
+        random.seed(1)
         v = 10000
         path_size = 1000
         g = DiGraph()
@@ -104,5 +106,5 @@ class TestGraphAlgo(TestCase):
             g.add_edge(randint(0, v), randint(0, v), expected_weight * uniform(1, 3))
         ga = GraphAlgo(g)
         ga_shortest_path = ga.shortest_path(src, dest)
-        self.assertEqual(expected_weight, ga_shortest_path[0])
         self.assertEqual(expected_path, ga_shortest_path[1])
+        self.assertEqual(expected_weight, ga_shortest_path[0])
