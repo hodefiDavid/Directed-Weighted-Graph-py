@@ -3,6 +3,9 @@ from heapq import heappush, heappop
 from DiGraph import *
 from GraphAlgoInterface import *
 from Gui import Gui
+from queue import PriorityQueue
+
+# from Queue import PriorityQueue
 
 
 class GraphAlgo(GraphAlgoInterface):
@@ -131,27 +134,23 @@ class GraphAlgo(GraphAlgoInterface):
         curr.tag = 0
         heappush(p_queue, curr)
         while len(p_queue) > 0:
-            if len(p_queue) > 0:
-                print(min(p_queue, key=lambda x: x.tag).tag , end="  ")
             curr = heappop(p_queue)
-            # print(curr.tag)
-            if len(p_queue) > 0:
-                # print(curr.tag , min(p_queue, key=lambda x: x.tag).tag)
-                print(curr.tag)
-
             if curr.id == id2:
                 return path
 
-            # if self.graph.nodes[id2].tag != -1:
-            #     if curr.tag >= self.graph.nodes[id2].tag:
-            #         break
+            if self.graph.nodes[id2].tag != -1:
+                if curr.tag >= self.graph.nodes[id2].tag:
+                    break
 
             for nodeIn_id, w in curr.node_out.items():
                 n = self.graph.nodes[nodeIn_id]
                 if n.tag == -1 or n.tag > curr.tag + w:
+                    if n in p_queue:
+                        p_queue.remove(n)
                     n.tag = curr.tag + w
                     heappush(p_queue, n)
                     path[n.id] = curr.id
+
         return path
 
     def init_tags(self):

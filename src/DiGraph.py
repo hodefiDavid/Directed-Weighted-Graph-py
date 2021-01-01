@@ -200,7 +200,10 @@ class DiGraph(GraphInterface):
 
         def __lt__(self, other):
             t = other.tag - self.tag
-            return t
+            return self.tag < other.tag
 
         def __hash__(self):
             return self.id
+
+        # def __cmp__(self, other):
+        #     return  self.tag - other.tag

@@ -35,12 +35,16 @@ class MyTestCase(unittest.TestCase):
         start_time = time.time()
         nx_res = nxf(self.gx, *args)
         end_time = time.time()
-        print('NX:', nxf.__name__ + str(args), ':', end_time - start_time)
+        nx_time = end_time - start_time
+        print('NX:', nxf.__name__ + str(args), ':', nx_time)
 
         start_time = time.time()
         g_res = gf(*args)
         end_time = time.time()
-        print('Our:', gf.__name__ + str(args), ':', end_time - start_time)
+        g_time = end_time - start_time
+        print('Our:', gf.__name__ + str(args), ':', g_time)
+
+        print('Faster:', 'NX' if nx_time < g_time else 'Our')
         return nx_res, g_res
 
     def test_built_times(self):
@@ -80,12 +84,18 @@ class MyTestCase(unittest.TestCase):
         This test compare calculation of the shortest path between 2 nodes
         on big graph, compares the results and measures running times.
         """
-        self.init('../data/10kG.json')
-        nx_res, g_res = self.compare_times(nx.dijkstra_path, self.ga.shortest_path, (0, 11))
-        self.assertEqual(g_res[1], nx_res)
-        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 500))
+        # self.init('../data/100kG.json')
+        self.init('../data/Big_path.json')
+        # nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 100))
+        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (2048, 8188))
+        print(g_res[0],"our -----")
+        print(nx_res,"Nx -----")
         self.assertEqual(g_res[0], nx_res)
-        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 999))
+        self.init('../data/100kG.json')
+
+        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 50000))
+        self.assertEqual(g_res[0], nx_res)
+        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 99999))
         self.assertEqual(g_res[0], nx_res)
 
     def test_connected_component(self):
