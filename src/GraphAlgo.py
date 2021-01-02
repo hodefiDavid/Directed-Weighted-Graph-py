@@ -1,12 +1,10 @@
 import json
 from heapq import heappush, heappop
+from queue import PriorityQueue
+
 from DiGraph import *
 from GraphAlgoInterface import *
 from Gui import Gui
-from queue import PriorityQueue
-
-
-# from Queue import PriorityQueue
 
 
 class GraphAlgo(GraphAlgoInterface):
@@ -106,27 +104,14 @@ class GraphAlgo(GraphAlgoInterface):
             lst.insert(0, temp)
             curr = temp
 
-        return self.graph.nodes[id2].tag, lst
-
-        # lst.insert(0, dest.id)
-        # curr = lst[0]
-
-        # while curr != src.id:
-        #     for i, w in self.graph.nodes[curr].node_in.items():
-        #         n = self.graph.nodes[i]
-        #         if n.tag + w == self.graph.nodes[curr].tag:
-        #             lst.insert(0, n.id)
-        #             curr = lst[0]
-        #             break
-
-        # return dest.tag, lst
+        return dest.tag, lst
 
     def set_tag_dist(self, id1, id2):
         """
-        "color" all the nosdes that acn be reached from id1
+        "color" all the nodes that acn be reached from id1
         :param self: getting the self of this class
         :param id1: the source id
-        :param id2: the destantion id
+        :param id2: the destination id
         """
         p_queue = PriorityQueue()
         path = {id1: None}
