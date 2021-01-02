@@ -27,6 +27,7 @@ class MyTestCase(unittest.TestCase):
         self.ga = GraphAlgo()
         self.ga.load_from_json(data_file_js)
         self.load_nx_from_json(data_file_js)
+        print('Current file:', data_file_js)
 
     def compare_times(self, nxf, gf, args=()):
         """
@@ -39,67 +40,65 @@ class MyTestCase(unittest.TestCase):
         nx_res = nxf(self.gx, *args)
         end_time = time.time()
         nx_time = end_time - start_time
-        print('NX:', nxf.__name__ + str(args), ':', nx_time)
+        print('NX:', nxf.__name__ + str(args), ':\t', nx_time)
 
         start_time = time.time()
         g_res = gf(*args)
         end_time = time.time()
         g_time = end_time - start_time
-        print('Our:', gf.__name__ + str(args), ':', g_time)
+        print('Our:', gf.__name__ + str(args), ':\t', g_time)
 
         print('Faster:', 'NX' if nx_time < g_time else 'Our')
         return nx_res, g_res
 
-    # def test_built_times(self):
-    #     """
-    #     This test compare building of big graph, and measures running times.
-    #     """
-    #     start_time = time.time()
-    #     graph = GraphAlgo()
-    #     graph.load_from_json("../data/10kG.json")
-    #     end_time = time.time()
-    #     print('Our:', "test_built_times" + "(10kG.json)", ':', end_time - start_time)
-    #
-    #     start_time = time.time()
-    #     self.load_nx_from_json("../data/10kG.json")
-    #     end_time = time.time()
-    #     print('NX:', "test_built_times" + "(10kG.json)", ':', end_time - start_time)
-    #
-    # def test_save(self):
-    #     """
-    #     This test compare saving of big graph to Json file, and measures running times.
-    #     """
-    #     self.init("../data/10kG.json")
-    #     start_time = time.time()
-    #     dict_jx = nx.node_link_data(self.gx, dict(source='src', target='dest', name='id', key='key', link='links'))
-    #     with open('../data/gX_saveTestTime.json', 'w') as f:
-    #         json.dump(dict_jx, f)
-    #     end_time = time.time()
-    #     print('NX:', "save_test_time" + "(10kG.json)", ':', end_time - start_time)
-    #
-    #     start_time = time.time()
-    #     self.ga.save_to_json("../data/g_saveTestTime.json")
-    #     end_time = time.time()
-    #     print('Our:', "save_test_time" + "(10kG.json)", ':', end_time - start_time)
+    def test_built_times(self):
+        """
+        This test compare building of big graph, and measures running times.
+        """
+        start_time = time.time()
+        graph = GraphAlgo()
+        graph.load_from_json("../data/10kG.json")
+        end_time = time.time()
+        print('Our:', "test_built_times" + "(10kG.json)", ':', end_time - start_time)
+
+        start_time = time.time()
+        self.load_nx_from_json("../data/10kG.json")
+        end_time = time.time()
+        print('NX:', "test_built_times" + "(10kG.json)", ':', end_time - start_time)
+
+    def test_save(self):
+        """
+        This test compare saving of big graph to Json file, and measures running times.
+        """
+        self.init("../data/10kG.json")
+        start_time = time.time()
+        dict_jx = nx.node_link_data(self.gx, dict(source='src', target='dest', name='id', key='key', link='links'))
+        with open('../data/gX_saveTestTime.json', 'w') as f:
+            json.dump(dict_jx, f)
+        end_time = time.time()
+        print('NX:', "save_test_time" + "(10kG.json)", ':', end_time - start_time)
+
+        start_time = time.time()
+        self.ga.save_to_json("../data/g_saveTestTime.json")
+        end_time = time.time()
+        print('Our:', "save_test_time" + "(10kG.json)", ':', end_time - start_time)
 
     def test_shortest_path(self):
         """
         This test compare calculation of the shortest path between 2 nodes
         on big graph, compares the results and measures running times.
         """
-        # self.init('../data/100kG.json')
-        # nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 100))
-        # self.assertEqual(g_res[0], nx_res)
-        # nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 50000))
-        # self.assertEqual(g_res[0], nx_res)
-        # nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 99999))
-        # self.assertEqual(g_res[0], nx_res)
-        print('started')
+        self.init('../data/100K.json')
+        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 100))
+        self.assertEqual(g_res[0], nx_res)
+        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 50000))
+        self.assertEqual(g_res[0], nx_res)
+        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 99999))
+        self.assertEqual(g_res[0], nx_res)
+
         self.init('../data/1MPath.json')
-        print('init ../data/1MPath.json')
-        print(nx.shortest_path(self.gx, 819203, 360439, weight='weight'))
-        # nx_res, g_res = self.compare_times(nx.dijkstra_path, self.ga.shortest_path, (819203, 360439))
-        # self.assertEqual(g_res[1], nx_res)
+        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (819203, 360439))
+        self.assertEqual(g_res[0], nx_res)
 
     def test_connected_component(self):
         """
@@ -114,22 +113,32 @@ class MyTestCase(unittest.TestCase):
         nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (1,))
         self.assertEqual(nx_res, set(g_res))
 
+        self.init('../data/100K.json')
+        nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (1,))
+        self.assertEqual(nx_res, set(g_res))
+
+        self.init('../data/10kG.json')
+        nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (1,))
+        self.assertEqual(nx_res, set(g_res))
+
     def test_connected_components(self):
         """
         This test compare calculation of the connected components of given graph,
         compares the results and measures running times.
         """
-        # self.init('../data/A5')
-        self.init('../data/1MGraph.json')
-        print('file loaded')
+        self.init('../data/A5')
         nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
         for i, s in enumerate(nx_res):
             self.assertEqual(s, set(g_res[i]))
-        print(g_res)
+
         self.init('../data/A5_edited')
         nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
-        for i, s in enumerate(nx_res):
-            self.assertEqual(s, set(g_res[i]))
+        for i in nx_res:
+            flag = False
+            for j in g_res:
+                if i == set(j):
+                    flag = True
+            self.assertTrue(flag)
 
     @staticmethod
     def get_strongly_cc(gx, node):
@@ -175,46 +184,6 @@ class MyTestCase(unittest.TestCase):
             for i in data['Edges']:
                 self.gx.add_edge(i['src'], i['dest'], weight=i['w'])
         return loc_w
-
-    ############## TEMP #################
-    @staticmethod
-    def test_million():
-        g = DiGraph()
-        v = 10 ** 6
-        for i in range(v):
-            g.add_node(i)
-        while g.e_size() < (10 ** 6):
-            g.add_edge(random.randint(0, v), random.randint(0, v), random.uniform(0., 50.))
-        GraphAlgo(g).save_to_json('../data/1MGraph.json')
-        print('done')
-
-    @staticmethod
-    def test_big_graph_path():
-        random.seed(1)
-        v = 10 ** 6
-        path_size = 10000
-        g = DiGraph()
-        for i in range(v):
-            g.add_node(i)
-        path = {random.randint(0, v - 1) for _ in range(path_size)}
-        expected_weight = 0
-        dest = src = prev_n = path.pop()
-        expected_path = [src]
-        while len(path) > 0:
-            next_n = path.pop()
-            expected_path.append(next_n)
-            weight = random.uniform(0, 1)
-            g.add_edge(prev_n, next_n, weight=weight)
-            expected_weight += weight
-            dest = prev_n = next_n
-        print('path done')
-        while g.e_size() < v * 1.5:
-            g.add_edge(random.randint(0, v), random.randint(0, v), weight=expected_weight * random.uniform(1, 3))
-        print('graph done')
-        ga = GraphAlgo(g).save_to_json('../data/1MPath.json')
-        # ga_shortest_path = ga.shortest_path(src, dest)
-        print('done', src, dest)
-
 
 if __name__ == '__main__':
     unittest.main()
