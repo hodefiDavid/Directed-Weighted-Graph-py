@@ -37,13 +37,13 @@ class MyTestCase(unittest.TestCase):
         nx_res = nxf(self.gx, *args)
         end_time = time.time()
         nx_time = end_time - start_time
-        print('NX:', nxf.__name__ + str(args), ':', nx_time)
+        print('NX:', nxf.__name__ + str(args), ':\t', nx_time)
 
         start_time = time.time()
         g_res = gf(*args)
         end_time = time.time()
         g_time = end_time - start_time
-        print('Our:', gf.__name__ + str(args), ':', g_time)
+        print('Our:', gf.__name__ + str(args), ':\t', g_time)
 
         print('Faster:', 'NX' if nx_time < g_time else 'Our')
         return nx_res, g_res
@@ -85,22 +85,17 @@ class MyTestCase(unittest.TestCase):
         This test compare calculation of the shortest path between 2 nodes
         on big graph, compares the results and measures running times.
         """
-        self.init('../data/Graphs_no_pos/G_30000_240000_0.json')
-        # self.init('../data/100kG.json')
-
-        # nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 100))
-        # self.assertEqual(g_res[0], nx_res)
-        # nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 50000))
-        # self.assertEqual(g_res[0], nx_res)
-        # nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 99999))
-        # self.assertEqual(g_res[0], nx_res)
-
-        # nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (10, 1))
-        # self.assertEqual(g_res[0], nx_res)
-        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 10))
+        self.init('../data/100K.json')
+        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 100))
         self.assertEqual(g_res[0], nx_res)
-        # nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 99999))
-        # self.assertEqual(g_res[0], nx_res)
+        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 50000))
+        self.assertEqual(g_res[0], nx_res)
+        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 99999))
+        self.assertEqual(g_res[0], nx_res)
+
+        self.init('../data/1MPath.json')
+        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (819203, 360439))
+        self.assertEqual(g_res[0], nx_res)
 
     def test_connected_component(self):
         """
@@ -108,15 +103,20 @@ class MyTestCase(unittest.TestCase):
         compares the results and measures running times.
         """
         self.init('../data/A5')
-        # self.init('../data/Graphs_no_pos/G_30000_240000_0.json')
-
         nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (1,))
         self.assertEqual(nx_res, set(g_res))
-        print(g_res)
+
         self.init('../data/A5_edited')
         nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (1,))
         self.assertEqual(nx_res, set(g_res))
-        print(g_res)
+
+        self.init('../data/100K.json')
+        nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (1,))
+        self.assertEqual(nx_res, set(g_res))
+
+        self.init('../data/10kG.json')
+        nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (1,))
+        self.assertEqual(nx_res, set(g_res))
 
     def test_connected_components(self):
         """
@@ -127,14 +127,11 @@ class MyTestCase(unittest.TestCase):
         self.init('../data/Graphs_no_pos/G_10000_80000_0.json.')
 
         nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
-        print(g_res)
         for i, s in enumerate(nx_res):
             self.assertEqual(s, set(g_res[i]))
 
         self.init('../data/A5_edited')
         nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
-        print(g_res)
-
         for i, s in enumerate(nx_res):
             self.assertEqual(s, set(g_res[i]))
 
