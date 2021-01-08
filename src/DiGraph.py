@@ -167,7 +167,8 @@ class DiGraph(GraphInterface):
         def __init__(self, node_id: int, pos: tuple = None):
             self.id = node_id
             self.tag = -1.0
-            self.remark = ""
+            #remark= ""
+            self.remark = 0
             self.node_out = dict()
             self.node_in = dict()
             self.position = pos

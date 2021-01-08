@@ -6,6 +6,8 @@ from unittest import TestCase
 from GraphAlgo import *
 from TestDiGraph import TestDiGraph as tdg
 
+import time
+
 
 class TestGraphAlgo(TestCase):
     def test_get_graph(self):
@@ -85,6 +87,34 @@ class TestGraphAlgo(TestCase):
         g = tdg.simple_graph_generate()
         # ga.graph = g
         ga.plot_graph()
+
+    def test_transpose_g(self):
+        # building a simple graph for testing
+        g = DiGraph()
+        for i in range(10):
+            g.add_node(i)
+            g.add_edge(i, i - 1, 1+i)
+
+        ga = GraphAlgo(g)
+        dist9_0 = ga.shortest_path(9, 0)
+        self.assertEqual(dist9_0[0], 54)
+
+        gt = ga.transpose_graph()
+        gta = GraphAlgo(gt)
+        # gta_dist9_0 = gta.shortest_path(9, 0)
+        # self.assertEqual(gta_dist9_0[0], -1)
+        # print(gta_dist9_0[0])
+        gta_dist0_9 = gta.shortest_path(0, 9)
+        self.assertEqual(dist9_0[0], gta_dist0_9[0])
+
+
+        self.assertEqual(g.all_out_edges_of_node(1)[0], gt.all_out_edges_of_node(0)[1])
+
+        # print(gta_dist9_0[0])
+        ga.plot_graph()
+        # print(gta_dist9_0[0])
+
+        gta.plot_graph()
 
     def test_big_path(self):
         random.seed(1)

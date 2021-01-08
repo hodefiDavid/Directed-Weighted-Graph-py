@@ -152,6 +152,14 @@ class GraphAlgo(GraphAlgoInterface):
 
         return path
 
+    def init_remark(self):
+        """
+        Initialize all the remark's nodes in the graph.
+        :param self: getting the self of this class.
+        """
+        for i in self.graph.nodes.values():
+            i.remark = 0
+
     def init_tags(self):
         """
         Initialize all the tag's nodes in the graph.
@@ -172,6 +180,8 @@ class GraphAlgo(GraphAlgoInterface):
             return None
 
         self.init_tags()
+        self.init_remark()
+
         num = 0
         self.set_connected_tag(self.graph.nodes[id1], num)
         ll = [id1]
@@ -179,10 +189,16 @@ class GraphAlgo(GraphAlgoInterface):
             if i.tag == 0:
                 ll.append(i.id)
         res = []
-        for i in ll:
+        # ll.reverse()
+        for i in range(len(ll)):
+            print("\t", i)
+            j = ll[-i - 1]
             num += 1
-            if self.connect_to_src(id1, i, num):
-                res.append(i)
+            # if self.connect_to_src(id1, i, num):
+            #     res.append(i)
+            if self.graph.nodes[j].remark != -5:
+                if self.connect_to_src(id1, j, num):
+                    res.append(j)
         return res
 
     def set_connected_tag(self, src: DiGraph.NodeData, num):
@@ -201,10 +217,14 @@ class GraphAlgo(GraphAlgoInterface):
         if src == node:
             return True
         lst = []
+        blackL = []
+
         node_ = self.graph.nodes[node]
         node_.tag = num
+        ####
+        node_.remark = node
         lst.append(node_)
-
+        blackL.append(node_)
         while len(lst) > 0:
             temp = lst.pop(0)
             for i in temp.node_out.keys():
@@ -215,6 +235,13 @@ class GraphAlgo(GraphAlgoInterface):
                         return True
                     t_node.tag = num
                     lst.append(t_node)
+
+                    t_node.remark = node
+                    blackL.append(t_node)
+
+        for i in blackL:
+            i.tag = -5
+
         return False
 
     def connected_components(self) -> List[list]:
@@ -225,21 +252,18 @@ class GraphAlgo(GraphAlgoInterface):
         """
         set_ = set()
         lst = []
-        for n in self.graph.nodes.values():
-            temp = self.connected_component(n.id)
-            flag = True
-            for i in lst:
-                if self.list_equals(i, temp):
-                    flag = False
-            if flag:
-                lst.append(temp)
+        n = next(iter(self.graph.nodes.values()))
+        temp = self.connected_component(n.id)
 
-            for i in self.graph.nodes.keys():
-                if i not in set_:
-                    ll = self.connected_component(i)
-                    set_ = set_.union(ll)
-                    lst.append(ll)
-            return lst
+        lst.append(temp)
+        set_ = set_.union(temp)
+        for i in self.graph.nodes.keys():
+            print(i)
+            if i not in set_:
+                ll = self.connected_component(i)
+                set_ = set_.union(ll)
+                lst.append(ll)
+        return lst
 
     def plot_graph(self) -> None:
         """
@@ -250,6 +274,19 @@ class GraphAlgo(GraphAlgoInterface):
         :return: None
         """
         Gui(self.graph)
+
+    def transpose_graph(self) -> DiGraph:
+        tg = DiGraph()
+        graph = self.graph
+
+        for i in graph.get_all_v():
+            tg.add_node(i, graph.nodes[i].position)
+
+        for i in graph.get_all_v():
+            for j in graph.nodes[i].node_out:
+                tg.add_edge(j, i, graph.all_out_edges_of_node(i)[j])  # , graph.nodes[i].node_in[j]
+
+        return tg
 
     @staticmethod
     def list_equals(lst1, lst2):
