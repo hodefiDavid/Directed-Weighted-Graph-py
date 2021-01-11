@@ -172,6 +172,12 @@ class DiGraph(GraphInterface):
             self.node_out = dict()
             self.node_in = dict()
             self.position = pos
+            #for ALGO SCC
+            self.sm = 0
+            self.em = 0
+            self.low_link = 0
+            self.visited = False
+
 
         def add_out(self, node_id: int, weight: float):
             """

@@ -116,6 +116,27 @@ class TestGraphAlgo(TestCase):
 
         gta.plot_graph()
 
+    def test_DFS_ssc(self):
+        # building a simple graph for testing
+        # g = DiGraph()
+        # for i in range(10):
+        #     g.add_node(i)
+        #     g.add_edge(i, i - 1, 1 + i)
+        #
+        # ga = GraphAlgo(g)
+        # ga.DFS_SCC()
+        # for i in ga.graph.nodes.values():
+        #     print(i.id ,"-----i.sm", i.sm ,"-----i.em", i.em)
+        # gat = GraphAlgo(ga.transpose_graph())
+        # gat.DFS_SCC()
+        #
+        # for i in gat.graph.nodes.values():
+        #     print(i.id ,"-----i.sm", i.sm ,"-----i.em", i.em)
+
+        ga = GraphAlgo()
+        ga.load_from_json('../data/A5_edited')
+        ga.DFS_SCC()
+
     def test_big_path(self):
         random.seed(1)
         v = 10000

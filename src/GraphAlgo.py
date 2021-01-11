@@ -9,6 +9,10 @@ from Gui import Gui
 
 class GraphAlgo(GraphAlgoInterface):
     """This class represents an algorithms class for the class Digraph."""
+    mark_time = 0
+    tmp_lst = set()
+    stack = []
+
 
     def __init__(self, g: DiGraph = None):
         """
@@ -235,20 +239,32 @@ class GraphAlgo(GraphAlgoInterface):
         :param self: getting the self of this class
         :return: The list all SCC
         """
-        set_ = set()
-        lst = []
-        n = next(iter(self.graph.nodes.values()))
-        temp = self.connected_component(n.id)
+        # importing the sys module
+        import sys
 
-        lst.append(temp)
-        set_ = set_.union(temp)
-        for i in self.graph.nodes.keys():
-            print(i)
-            if i not in set_:
-                ll = self.connected_component(i)
-                set_ = set_.union(ll)
-                lst.append(ll)
-        return lst
+        # the setrecursionlimit function is
+        # used to modify the default recursion
+        # limit set by python. Using this,
+        # we can increase the recursion limit
+        # to satisfy our needs
+
+        sys.setrecursionlimit(10 ** 8)
+
+        return self.DFS_SCC()
+        # set_ = set()
+        # lst = []
+        # n = next(iter(self.graph.nodes.values()))
+        # temp = self.connected_component(n.id)
+        #
+        # lst.append(temp)
+        # set_ = set_.union(temp)
+        # for i in self.graph.nodes.keys():
+        #     print(i)
+        #     if i not in set_:
+        #         ll = self.connected_component(i)
+        #         set_ = set_.union(ll)
+        #         lst.append(ll)
+        # return lst
 
     def plot_graph(self) -> None:
         """
@@ -260,7 +276,81 @@ class GraphAlgo(GraphAlgoInterface):
         """
         Gui(self.graph)
 
+    def DFS_SCC(self) -> List:
+        """
+        this DFS mark the start and ending time that the dfs reach them
+        node.sm -  start mark
+        node.em - end mark
+        """
+        # Replaced the recursive call with push to the local stack
+        # Replaced "returns" with pop from local stack
+        # Set the variables at the start of the loop and popped from the local stack
+
+        # first mark
+        node_list = self.graph.get_all_v().values()
+        self.m_t_init()
+
+        for i in node_list:
+            if i.sm == 0:
+                # mark_time = self.m_t()
+                self.DFS_SCC_m(i, self.m_t())
+
+        q = PriorityQueue()
+        for i in node_list:
+            q.put((-i.em, i.id))
+
+        # building transpose graph
+        tg = self.transpose_graph()
+        transpose_g = GraphAlgo(tg)
+
+        lst = []
+
+        while not q.empty():
+
+            node = transpose_g.graph.nodes[q.get()[1]]
+            if node.sm == 0:
+                GraphAlgo.tmp_lst = set()
+                lst.append(list(transpose_g.DFS_SCC_f(node, 1, GraphAlgo.tmp_lst)))
+
+        return lst
+
+    def DFS_SCC_m(self, node, num_mark) -> None:
+        node.sm = num_mark
+
+        neighbor_nodes = node.node_out.keys()
+        for i in neighbor_nodes:
+            temp_node = self.graph.nodes[i]
+            if temp_node.sm == 0:
+                self.DFS_SCC_m(temp_node, self.m_t())
+        node.em = self.m_t()
+
+    def DFS_SCC_f(self, node, num_mark, tmp_lst) -> set:
+        node.sm = num_mark
+
+        # tmp_lst = set()
+        tmp_lst.add(node.id)
+
+        neighbor_nodes = node.node_out.keys()
+        for i in neighbor_nodes:
+            temp_node = self.graph.nodes[i]
+            if temp_node.sm == 0:
+                tmp_lst.add(i)
+                self.DFS_SCC_f(temp_node, num_mark, tmp_lst)
+                # tmp_lst.union(self.DFS_SCC_f(temp_node, num_mark))
+        # node.em = num_mark
+        return tmp_lst
+
     def transpose_graph(self) -> DiGraph:
+        """
+        Transpose of a directed graph G is another directed graph
+        on the same set of vertices with all of the edges reversed
+        compared to the orientation of the corresponding edges in G.
+        That is, if G contains an edge (u, v) then the converse/transpose/reverse
+        of G contains an edge (v, u) and vice versa.
+        for more information visit https://www.geeksforgeeks.org/transpose-graph/
+        we use this fuction in order to find the SCC
+        :return:Transpose graph
+        """
         tg = DiGraph()
         graph = self.graph
 
@@ -273,15 +363,26 @@ class GraphAlgo(GraphAlgoInterface):
 
         return tg
 
-    @staticmethod
-    def list_equals(lst1, lst2):
-        """
-        this function checks if all the objects in one list contains in the other list
-        :param lst1: list 1
-        :param lst2: list 2
-        :return: True iff the list are equals
-        """
-        for j in lst1:
-            if j not in lst2:
-                return False
-        return True
+    # @staticmethod
+    def m_t(self) -> int:
+        GraphAlgo.mark_time = GraphAlgo.mark_time + 1
+        return GraphAlgo.mark_time
+
+    # @staticmethod
+    def m_t_init(self) -> int:
+        GraphAlgo.mark_time = 0
+        return GraphAlgo.mark_time
+
+
+@staticmethod
+def list_equals(lst1, lst2):
+    """
+    this function checks if all the objects in one list contains in the other list
+    :param lst1: list 1
+    :param lst2: list 2
+    :return: True iff the list are equals
+    """
+    for j in lst1:
+        if j not in lst2:
+            return False
+    return True
