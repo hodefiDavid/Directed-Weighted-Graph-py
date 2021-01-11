@@ -134,9 +134,10 @@ class TestGraphAlgo(TestCase):
         #     print(i.id ,"-----i.sm", i.sm ,"-----i.em", i.em)
 
         ga = GraphAlgo()
-        ga.load_from_json('../data/A5_edited')
-        print(ga.SCC_itr())
-
+        ga.load_from_json('../data/Graphs_no_pos/G_30000_240000_0.json')
+        # print(ga.strongly_cc())
+        ga.strongly_ccs()
+        print("done")
     def test_big_path(self):
         random.seed(1)
         v = 10000

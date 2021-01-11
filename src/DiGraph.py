@@ -156,6 +156,8 @@ class DiGraph(GraphInterface):
     def __eq__(self, other):
         return self.edge_size == other.edge_size and self.nodes == other.nodes
 
+    # def __deepcopy__(self, memodict={}):
+
     class NodeData:
         """
         This inner class are represent a node in directed weighted graph - DiGraph.

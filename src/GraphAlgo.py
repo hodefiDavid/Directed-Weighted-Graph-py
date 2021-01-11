@@ -241,7 +241,6 @@ class GraphAlgo(GraphAlgoInterface):
         :return: The list all SCC
         """
 
-
         return self.DFS_SCC()
         # set_ = set()
         # lst = []
@@ -332,6 +331,15 @@ class GraphAlgo(GraphAlgoInterface):
         # node.em = num_mark
         return tmp_lst
 
+    def m_t(self) -> int:
+        GraphAlgo.mark_time = GraphAlgo.mark_time + 1
+        return GraphAlgo.mark_time
+
+    # @staticmethod
+    def m_t_init(self) -> int:
+        GraphAlgo.mark_time = 0
+        return GraphAlgo.mark_time
+
     def transpose_graph(self) -> DiGraph:
         """
         Transpose of a directed graph G is another directed graph
@@ -356,14 +364,6 @@ class GraphAlgo(GraphAlgoInterface):
         return tg
 
     # @staticmethod
-    def m_t(self) -> int:
-        GraphAlgo.mark_time = GraphAlgo.mark_time + 1
-        return GraphAlgo.mark_time
-
-    # @staticmethod
-    def m_t_init(self) -> int:
-        GraphAlgo.mark_time = 0
-        return GraphAlgo.mark_time
 
     def SCC_itr(self) -> List:
         # importing the sys module
@@ -404,8 +404,47 @@ class GraphAlgo(GraphAlgoInterface):
                 if tmp_node == node:
                     break
 
+    def strongly_cc(self, ) -> List:
+        gt = GraphAlgo(self.transpose_graph())
 
 
+    def strongly_ccs(self) -> List:
+        gt = GraphAlgo(self.transpose_graph())
+        lst = list()
+        lst_node_id = list()
+
+        for i in self.graph.nodes.keys():
+            lst_node_id.append(i)
+
+        while len(lst_node_id) > 0:
+
+            temp_node = lst_node_id.pop()
+            set_g = self.dfs_cc(temp_node, self.m_t())
+            set_gt = gt.dfs_cc(temp_node, self.m_t())
+            conncted_componnent_tn = set.intersection(set_gt, set_g)
+            for i in conncted_componnent_tn:
+                if i in lst_node_id:
+                    lst_node_id.remove(i)
+            lst.append(list(conncted_componnent_tn))
+
+        return lst
+
+    def dfs_cc(self, src_id, tag) -> set:
+        src = self.graph.nodes[src_id]
+        pq = []
+        src.tag = tag
+        heappush(pq, src)
+        set_of_connected_nodes = set()
+        set_of_connected_nodes.add(src.id)
+        while len(pq) > 0:
+            temp = heappop(pq)
+            for i in temp.node_out.keys():
+                t_node = self.graph.nodes[i]
+                if t_node.tag != tag:
+                    t_node.tag = tag
+                    set_of_connected_nodes.add(t_node.id)
+                    heappush(pq, t_node)
+        return set_of_connected_nodes
 
 
 @staticmethod
