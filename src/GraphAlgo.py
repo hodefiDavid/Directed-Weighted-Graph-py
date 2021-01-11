@@ -11,8 +11,9 @@ class GraphAlgo(GraphAlgoInterface):
     """This class represents an algorithms class for the class Digraph."""
     mark_time = 0
     tmp_lst = set()
+    sc_components = []
     stack = []
-
+    tmp_lst1 = list()
 
     def __init__(self, g: DiGraph = None):
         """
@@ -239,16 +240,7 @@ class GraphAlgo(GraphAlgoInterface):
         :param self: getting the self of this class
         :return: The list all SCC
         """
-        # importing the sys module
-        import sys
 
-        # the setrecursionlimit function is
-        # used to modify the default recursion
-        # limit set by python. Using this,
-        # we can increase the recursion limit
-        # to satisfy our needs
-
-        sys.setrecursionlimit(10 ** 8)
 
         return self.DFS_SCC()
         # set_ = set()
@@ -372,6 +364,48 @@ class GraphAlgo(GraphAlgoInterface):
     def m_t_init(self) -> int:
         GraphAlgo.mark_time = 0
         return GraphAlgo.mark_time
+
+    def SCC_itr(self) -> List:
+        # importing the sys module
+        import sys
+
+        # the setrecursionlimit function is
+        # used to modify the default recursion
+        # limit set by python. Using this,
+        # we can increase the recursion limit
+        # to satisfy our needs
+
+        sys.setrecursionlimit(10 ** 8)
+        for i in self.graph.nodes.values():
+            if not i.visited:
+                self.dfs(i)
+        return self.sc_components
+
+    def dfs(self, node):
+        node.low_link = self.m_t()
+        self.stack.append(node)
+        nodeIsComponentRoot = True
+
+        # for i in self.graph.nodes.values():
+        for i in self.graph.nodes[node.id].node_out:
+            i = self.graph.nodes[i]
+            if not i.visited:
+                self.dfs(i)
+            if node.low_link > i.low_link:
+                node.low_link = i.low_link
+                nodeIsComponentRoot = False
+
+        if nodeIsComponentRoot:
+            component = list()
+            while 1 == 1:
+                tmp_node = self.stack.pop()
+                component.append(tmp_node)
+                tmp_node.low_link = float('inf')
+                if tmp_node == node:
+                    break
+
+
+
 
 
 @staticmethod

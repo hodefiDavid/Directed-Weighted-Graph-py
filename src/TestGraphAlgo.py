@@ -135,7 +135,7 @@ class TestGraphAlgo(TestCase):
 
         ga = GraphAlgo()
         ga.load_from_json('../data/A5_edited')
-        ga.DFS_SCC()
+        print(ga.SCC_itr())
 
     def test_big_path(self):
         random.seed(1)
