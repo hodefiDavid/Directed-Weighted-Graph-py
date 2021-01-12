@@ -9,11 +9,9 @@ from Gui import Gui
 
 class GraphAlgo(GraphAlgoInterface):
     """This class represents an algorithms class for the class Digraph."""
-    mark_time = 0
-    tmp_lst = set()
-    sc_components = []
-    stack = []
-    tmp_lst1 = list()
+
+    mark_time = 0 #used for the algorithms Scc
+
 
     def __init__(self, g: DiGraph = None):
         """
@@ -101,7 +99,6 @@ class GraphAlgo(GraphAlgoInterface):
         path = self.set_tag_dist(id1, id2)
         if dest.tag == -1:
             return float("inf"), None
-        # 1 2 3 7
         curr = id2
         lst = [id2]
         while curr != id1:
@@ -142,22 +139,6 @@ class GraphAlgo(GraphAlgoInterface):
 
         return path
 
-    def init_remark(self):
-        """
-        Initialize all the remark's nodes in the graph.
-        :param self: getting the self of this class.
-        """
-        for i in self.graph.nodes.values():
-            i.remark = 0
-
-    def init_tags(self):
-        """
-        Initialize all the tag's nodes in the graph.
-        :param self: getting the self of this class.
-        """
-        for i in self.graph.nodes.values():
-            i.tag = -1
-
     def connected_component(self, id1: int) -> list:
         """
         Finds the Strongly Connected Component(SCC) that node id1 is a part of.
@@ -168,247 +149,26 @@ class GraphAlgo(GraphAlgoInterface):
         """
         if id1 not in self.graph.nodes.keys():
             return None
-
+        self.m_t_init()
         self.init_tags()
-        self.init_remark()
-
-        num = 0
-        self.set_connected_tag(self.graph.nodes[id1], num)
-        ll = [id1]
-        for i in self.graph.nodes.values():
-            if i.tag == 0:
-                ll.append(i.id)
-        res = []
-        # ll.reverse()
-        for i in range(len(ll)):
-            print("\t", i)
-            j = ll[-i - 1]
-            num += 1
-            # if self.connect_to_src(id1, i, num):
-            #     res.append(i)
-            if self.graph.nodes[j].remark != -5:
-                if self.connect_to_src(id1, j, num):
-                    res.append(j)
+        gt = GraphAlgo(self.transpose_graph())
+        set_gt = gt.dfs_cc(id1, self.m_t())
+        set_g = self.dfs_cc(id1, self.m_t())
+        res = list(set.intersection(set_gt, set_g))
         return res
-
-    def set_connected_tag(self, src: DiGraph.NodeData, num):
-        pq = []
-        src.tag = -2
-        heappush(pq, src)
-        while len(pq) > 0:
-            temp = heappop(pq)
-            for i in temp.node_out.keys():
-                t_node = self.graph.nodes[i]
-                if t_node.tag == -1:
-                    t_node.tag = num
-                    heappush(pq, t_node)
-
-    def connect_to_src(self, src: int, node: int, num: int):
-        if src == node:
-            return True
-        lst = []
-        blackL = []
-
-        node_ = self.graph.nodes[node]
-        node_.tag = num
-        ####
-        node_.remark = node
-        lst.append(node_)
-        blackL.append(node_)
-        while len(lst) > 0:
-            temp = lst.pop(0)
-            for i in temp.node_out.keys():
-                t_node = self.graph.nodes[i]
-                if t_node.tag != num:
-                    if t_node.tag == -2:
-                        node_.tag = -2
-                        return True
-                    t_node.tag = num
-                    lst.append(t_node)
-
-                    t_node.remark = node
-                    blackL.append(t_node)
-
-        for i in blackL:
-            i.tag = -5
-
-        return False
 
     def connected_components(self) -> List[list]:
         """
         Finds all the Strongly Connected Component(SCC) in the graph.
+        To find the well-linked component that contains the vertex v, we need to construct a group of
+        vertices accessible from vertex v lets call this group A. Then a new graph G-transpose is built
+        then we will find all the vertices accessible from vertex v in the graph G-transpose lets call this group B
+        Group B ∩ A is a group of vertices that consist the well-linked component of Graph G containing the
+        Vertex v. The complexity of an algorithm in the worst case is (| V | * | E |)  because each vertex passes
+        On all sides of the graph.
         :param self: getting the self of this class
         :return: The list all SCC
         """
-
-        return self.DFS_SCC()
-        # set_ = set()
-        # lst = []
-        # n = next(iter(self.graph.nodes.values()))
-        # temp = self.connected_component(n.id)
-        #
-        # lst.append(temp)
-        # set_ = set_.union(temp)
-        # for i in self.graph.nodes.keys():
-        #     print(i)
-        #     if i not in set_:
-        #         ll = self.connected_component(i)
-        #         set_ = set_.union(ll)
-        #         lst.append(ll)
-        # return lst
-
-    def plot_graph(self) -> None:
-        """
-        Plots the graph.
-        If the nodes have a position, the nodes will be placed there.
-        Otherwise, they will be placed in a random but elegant manner.
-        :param self: getting the self of this class
-        :return: None
-        """
-        Gui(self.graph)
-
-    def DFS_SCC(self) -> List:
-        """
-        this DFS mark the start and ending time that the dfs reach them
-        node.sm -  start mark
-        node.em - end mark
-        """
-        # Replaced the recursive call with push to the local stack
-        # Replaced "returns" with pop from local stack
-        # Set the variables at the start of the loop and popped from the local stack
-
-        # first mark
-        node_list = self.graph.get_all_v().values()
-        self.m_t_init()
-
-        for i in node_list:
-            if i.sm == 0:
-                # mark_time = self.m_t()
-                self.DFS_SCC_m(i, self.m_t())
-
-        q = PriorityQueue()
-        for i in node_list:
-            q.put((-i.em, i.id))
-
-        # building transpose graph
-        tg = self.transpose_graph()
-        transpose_g = GraphAlgo(tg)
-
-        lst = []
-
-        while not q.empty():
-
-            node = transpose_g.graph.nodes[q.get()[1]]
-            if node.sm == 0:
-                GraphAlgo.tmp_lst = set()
-                lst.append(list(transpose_g.DFS_SCC_f(node, 1, GraphAlgo.tmp_lst)))
-
-        return lst
-
-    def DFS_SCC_m(self, node, num_mark) -> None:
-        node.sm = num_mark
-
-        neighbor_nodes = node.node_out.keys()
-        for i in neighbor_nodes:
-            temp_node = self.graph.nodes[i]
-            if temp_node.sm == 0:
-                self.DFS_SCC_m(temp_node, self.m_t())
-        node.em = self.m_t()
-
-    def DFS_SCC_f(self, node, num_mark, tmp_lst) -> set:
-        node.sm = num_mark
-
-        # tmp_lst = set()
-        tmp_lst.add(node.id)
-
-        neighbor_nodes = node.node_out.keys()
-        for i in neighbor_nodes:
-            temp_node = self.graph.nodes[i]
-            if temp_node.sm == 0:
-                tmp_lst.add(i)
-                self.DFS_SCC_f(temp_node, num_mark, tmp_lst)
-                # tmp_lst.union(self.DFS_SCC_f(temp_node, num_mark))
-        # node.em = num_mark
-        return tmp_lst
-
-    def m_t(self) -> int:
-        GraphAlgo.mark_time = GraphAlgo.mark_time + 1
-        return GraphAlgo.mark_time
-
-    # @staticmethod
-    def m_t_init(self) -> int:
-        GraphAlgo.mark_time = 0
-        return GraphAlgo.mark_time
-
-    def transpose_graph(self) -> DiGraph:
-        """
-        Transpose of a directed graph G is another directed graph
-        on the same set of vertices with all of the edges reversed
-        compared to the orientation of the corresponding edges in G.
-        That is, if G contains an edge (u, v) then the converse/transpose/reverse
-        of G contains an edge (v, u) and vice versa.
-        for more information visit https://www.geeksforgeeks.org/transpose-graph/
-        we use this fuction in order to find the SCC
-        :return:Transpose graph
-        """
-        tg = DiGraph()
-        graph = self.graph
-
-        for i in graph.get_all_v():
-            tg.add_node(i, graph.nodes[i].position)
-
-        for i in graph.get_all_v():
-            for j in graph.nodes[i].node_out:
-                tg.add_edge(j, i, graph.all_out_edges_of_node(i)[j])  # , graph.nodes[i].node_in[j]
-
-        return tg
-
-    # @staticmethod
-
-    def SCC_itr(self) -> List:
-        # importing the sys module
-        import sys
-
-        # the setrecursionlimit function is
-        # used to modify the default recursion
-        # limit set by python. Using this,
-        # we can increase the recursion limit
-        # to satisfy our needs
-
-        sys.setrecursionlimit(10 ** 8)
-        for i in self.graph.nodes.values():
-            if not i.visited:
-                self.dfs(i)
-        return self.sc_components
-
-    def dfs(self, node):
-        node.low_link = self.m_t()
-        self.stack.append(node)
-        nodeIsComponentRoot = True
-
-        # for i in self.graph.nodes.values():
-        for i in self.graph.nodes[node.id].node_out:
-            i = self.graph.nodes[i]
-            if not i.visited:
-                self.dfs(i)
-            if node.low_link > i.low_link:
-                node.low_link = i.low_link
-                nodeIsComponentRoot = False
-
-        if nodeIsComponentRoot:
-            component = list()
-            while 1 == 1:
-                tmp_node = self.stack.pop()
-                component.append(tmp_node)
-                tmp_node.low_link = float('inf')
-                if tmp_node == node:
-                    break
-
-    def strongly_cc(self, ) -> List:
-        gt = GraphAlgo(self.transpose_graph())
-
-
-    def strongly_ccs(self) -> List:
         gt = GraphAlgo(self.transpose_graph())
         lst = list()
         lst_node_id = list()
@@ -446,6 +206,62 @@ class GraphAlgo(GraphAlgoInterface):
                     heappush(pq, t_node)
         return set_of_connected_nodes
 
+    def plot_graph(self) -> None:
+        """
+        Plots the graph.
+        If the nodes have a position, the nodes will be placed there.
+        Otherwise, they will be placed in a random but elegant manner.
+        :param self: getting the self of this class
+        :return: None
+        """
+        Gui(self.graph)
+
+    def transpose_graph(self) -> DiGraph:
+        """
+        Transpose of a directed graph G is another directed graph
+        on the same set of vertices with all of the edges reversed
+        compared to the orientation of the corresponding edges in G.
+        That is, if G contains an edge (u, v) then the converse/transpose/reverse
+        of G contains an edge (v, u) and vice versa.
+        for more information visit https://www.geeksforgeeks.org/transpose-graph/
+        we use this fuction in order to find the SCC
+        :return:Transpose graph
+        """
+        tg = DiGraph()
+        graph = self.graph
+
+        for i in graph.get_all_v():
+            tg.add_node(i, graph.nodes[i].position)
+
+        for i in graph.get_all_v():
+            for j in graph.nodes[i].node_out:
+                tg.add_edge(j, i, graph.all_out_edges_of_node(i)[j])  # , graph.nodes[i].node_in[j]
+
+        return tg
+
+    def init_remark(self):
+        """
+        Initialize all the remark's nodes in the graph.
+        :param self: getting the self of this class.
+        """
+        for i in self.graph.nodes.values():
+            i.remark = 0
+
+    def init_tags(self):
+        """
+        Initialize all the tag's nodes in the graph.
+        :param self: getting the self of this class.
+        """
+        for i in self.graph.nodes.values():
+            i.tag = -1
+
+    def m_t(self) -> int:
+        GraphAlgo.mark_time = GraphAlgo.mark_time + 1
+        return GraphAlgo.mark_time
+
+    def m_t_init(self) -> int:
+        GraphAlgo.mark_time = 0
+        return GraphAlgo.mark_time
 
 @staticmethod
 def list_equals(lst1, lst2):

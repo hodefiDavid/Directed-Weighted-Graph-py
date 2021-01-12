@@ -62,7 +62,7 @@ class TestGraphAlgo(TestCase):
         lst = [[0], [n for n in g.nodes.keys() if n != 0]]
         lst1 = ga.connected_components()
 
-        self.assertEqual(set(lst[0]), set(lst1[0]))
+        self.assertEqual(set(lst[1]), set(lst1[0]))
         g.remove_node(2)
         lst1 = ga.connected_components()
         self.assertNotEqual(lst, lst1)
@@ -73,12 +73,12 @@ class TestGraphAlgo(TestCase):
         g.add_edge(1, 2, 2.3)
         g.add_edge(8, 2, 2.3)
         lst1 = ga.connected_components()
-        for i in lst:
-            flag = False
-            for j in lst1:
-                if GraphAlgo.list_equals(i, j):
-                    flag = True
-            self.assertTrue(flag)
+        flag = True
+        for j in lst1:
+            if j not in lst:
+                return False
+
+        self.assertTrue(flag)
 
     @unittest.skip
     def test_plot_graph(self):
@@ -101,43 +101,15 @@ class TestGraphAlgo(TestCase):
 
         gt = ga.transpose_graph()
         gta = GraphAlgo(gt)
-        # gta_dist9_0 = gta.shortest_path(9, 0)
-        # self.assertEqual(gta_dist9_0[0], -1)
-        # print(gta_dist9_0[0])
+
         gta_dist0_9 = gta.shortest_path(0, 9)
         self.assertEqual(dist9_0[0], gta_dist0_9[0])
 
-
         self.assertEqual(g.all_out_edges_of_node(1)[0], gt.all_out_edges_of_node(0)[1])
 
-        # print(gta_dist9_0[0])
-        ga.plot_graph()
-        # print(gta_dist9_0[0])
+        # ga.plot_graph()
+        # gta.plot_graph()
 
-        gta.plot_graph()
-
-    def test_DFS_ssc(self):
-        # building a simple graph for testing
-        # g = DiGraph()
-        # for i in range(10):
-        #     g.add_node(i)
-        #     g.add_edge(i, i - 1, 1 + i)
-        #
-        # ga = GraphAlgo(g)
-        # ga.DFS_SCC()
-        # for i in ga.graph.nodes.values():
-        #     print(i.id ,"-----i.sm", i.sm ,"-----i.em", i.em)
-        # gat = GraphAlgo(ga.transpose_graph())
-        # gat.DFS_SCC()
-        #
-        # for i in gat.graph.nodes.values():
-        #     print(i.id ,"-----i.sm", i.sm ,"-----i.em", i.em)
-
-        ga = GraphAlgo()
-        ga.load_from_json('../data/Graphs_no_pos/G_30000_240000_0.json')
-        # print(ga.strongly_cc())
-        ga.strongly_ccs()
-        print("done")
     def test_big_path(self):
         random.seed(1)
         v = 10000

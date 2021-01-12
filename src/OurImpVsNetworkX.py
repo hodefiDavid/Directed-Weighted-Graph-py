@@ -4,7 +4,6 @@ import unittest
 import networkx as nx
 import GuiNetworkX as gnx
 from GraphAlgo import *
-import random  # fjgkgbbbbbbbbbbbbbbbb
 
 
 class MyTestCase(unittest.TestCase):
@@ -85,37 +84,37 @@ class MyTestCase(unittest.TestCase):
         This test compare calculation of the shortest path between 2 nodes
         on big graph, compares the results and measures running times.
         """
-        self.init('../data/100K.json')
-        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 100))
+        self.init('../data/Graphs_on_circle/G_10_80_1.json')
+        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 9))
         self.assertEqual(g_res[0], nx_res)
-        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 50000))
+        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 8))
         self.assertEqual(g_res[0], nx_res)
-        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (0, 99999))
+        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (1, 9))
         self.assertEqual(g_res[0], nx_res)
 
-        self.init('../data/1MPath.json')
-        nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (819203, 360439))
-        self.assertEqual(g_res[0], nx_res)
+        # self.init('../data/1MPath.json')
+        # nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (819203, 360439))
+        # self.assertEqual(g_res[0], nx_res)
 
     def test_connected_component(self):
         """
         This test compare calculation of the connected component of node,
         compares the results and measures running times.
         """
-        self.init('../data/A5')
-        nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (1,))
+        self.init('../data/Graphs_on_circle/G_30000_240000_1.json')
+        nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (1000,))
         self.assertEqual(nx_res, set(g_res))
 
-        self.init('../data/A5_edited')
-        nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (1,))
+        # self.init('../data/Graphs_on_circle/G_10_80_1.json')
+        nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (2000,))
         self.assertEqual(nx_res, set(g_res))
 
-        self.init('../data/100K.json')
-        nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (1,))
+        # self.init('../data/100K.json')
+        nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (3000,))
         self.assertEqual(nx_res, set(g_res))
 
-        self.init('../data/10kG.json')
-        nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (1,))
+        # self.init('../data/10kG.json')
+        nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (4000,))
         self.assertEqual(nx_res, set(g_res))
 
     def test_connected_components(self):
@@ -123,17 +122,18 @@ class MyTestCase(unittest.TestCase):
         This test compare calculation of the connected components of given graph,
         compares the results and measures running times.
         """
-        # self.init('../data/A5')
-        self.init('../data/Graphs_no_pos/G_10000_80000_0.json.')
+        self.init('../data/Graphs_on_circle/G_10000_80000_1.json')
+        # self.init('../data/A5_edited')
 
         nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
-        for i, s in enumerate(nx_res):
-            self.assertEqual(s, set(g_res[i]))
-
-        self.init('../data/A5_edited')
-        nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
-        for i, s in enumerate(nx_res):
-            self.assertEqual(s, set(g_res[i]))
+        # x1 = nx_res.__next__()
+        # self.assertEqual(x1, set(g_res[1]))
+        # #
+        # nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
+        # x1 = nx_res.__next__()
+        # x2 = nx_res.__next__()
+        # self.assertEqual(x1, set(g_res[1]))
+        # self.assertEqual(x2, set(g_res[0]))
 
     @staticmethod
     def get_strongly_cc(gx, node):
@@ -179,40 +179,6 @@ class MyTestCase(unittest.TestCase):
             for i in data['Edges']:
                 self.gx.add_edge(i['src'], i['dest'], weight=i['w'])
         return loc_w
-
-    def test_big_path_mil(self):
-        # nx1 = nx.DiGraph()
-        g = DiGraph()
-        for i in range(1000000):
-            # nx1.add_node(i)
-            g.add_node(i)
-            g.add_edge(i - 1, i, random.randint(1, 25))
-
-        # for i in range(500000):
-        #     if i % 1500 == 0:
-        #         for j in range(1700):
-        # nx1.add_edge(i, i - j, lenght=2.3)
-        # g.add_edge(i, i - j, 2.3)
-        # g.add_edge(i - j, i, 2.3)
-
-        print("end build")
-        ga = GraphAlgo(g)
-        ga.save_to_json("milll.json")
-
-        # start_time = time.time()
-
-        # time
-        # ga = GraphAlgo(g)
-        # print((nx.strongly_connected_components(nx1)))
-        # for i in nx.strongly_connected_components(nx1):
-        #     print(i)
-        # print((ga.connected_components()))
-        # end_time = time.time()
-        # print(end_time - start_time)
-
-        #
-        # self.assertEqual(expected_path, ga_shortest_path[1])
-        # self.assertEqual(expected_weight, ga_shortest_path[0])
 
 
 if __name__ == '__main__':
