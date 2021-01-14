@@ -32,7 +32,7 @@ class TestGraphAlgo(TestCase):
         ga = GraphAlgo(g)
         expected_lst = [1, 2, 3, 7]
         self.assertEqual((3.0, expected_lst), ga.shortest_path(1, 7))
-        self.assertEqual((-1, []), ga.shortest_path(1, 88))
+        self.assertEqual((float("inf"), None), ga.shortest_path(1, 88))
         expected_lst = [3, 7, 8, 9]
         self.assertEqual((9, expected_lst), ga.shortest_path(3, 9))
 

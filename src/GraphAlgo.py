@@ -10,7 +10,7 @@ from Gui import Gui
 class GraphAlgo(GraphAlgoInterface):
     """This class represents an algorithms class for the class Digraph."""
 
-    mark_time = 0  # used for the algorithms Scc
+    mark_tag = 0  # used for the algorithms Scc
 
     def __init__(self, g: DiGraph = None):
         """
@@ -88,7 +88,7 @@ class GraphAlgo(GraphAlgoInterface):
         :return: The distance of the path, the path as a list
         """
         if id1 not in self.graph.nodes.keys() or id2 not in self.graph.nodes.keys():
-            return -1, []
+            return float("inf"), None
         src = self.graph.nodes[id1]
         dest = self.graph.nodes[id2]
 
@@ -109,7 +109,7 @@ class GraphAlgo(GraphAlgoInterface):
 
     def set_tag_dist(self, id1, id2):
         """
-        "color" all the nodes that acn be reached from id1
+        set the distance from id to all the nodes that can be reached from id1 until we reach id2
         :param self: getting the self of this class
         :param id1: the source id
         :param id2: the destination id
@@ -189,6 +189,9 @@ class GraphAlgo(GraphAlgoInterface):
                 tag = self.m_t()
                 gt.dfs_mark(temp_node, tag)
                 connected_component = gt.dfs_collect(temp_node, tag)
+
+                # here we remove from the graph the vertices that already belong to SCC
+                gt.plot_graph()
                 for i in connected_component:
                     gt.graph.remove_node(i)
 
@@ -219,7 +222,7 @@ class GraphAlgo(GraphAlgoInterface):
         """
         using DFS we collect every node that marked by the function dfs_cc
         we use reverse DFS that mean instead of going throw the OUT_NODE vertices we going throw IN_NODE vertices
-        we trat the graph as a transpose graph
+        we treat the graph as a transpose graph
         :param src_id:
         :param tag:
         """
@@ -258,7 +261,7 @@ class GraphAlgo(GraphAlgoInterface):
         That is, if G contains an edge (u, v) then the converse/transpose/reverse
         of G contains an edge (v, u) and vice versa.
         for more information visit https://www.geeksforgeeks.org/transpose-graph/
-        we use this fuction in order to find the SCC
+        we use the transpose_graph function in the connected_components function.
         :return:Transpose graph
         """
         tg = DiGraph()
@@ -269,7 +272,7 @@ class GraphAlgo(GraphAlgoInterface):
 
         for i in graph.get_all_v():
             for j in graph.nodes[i].node_out:
-                tg.add_edge(j, i, graph.all_out_edges_of_node(i)[j])  # , graph.nodes[i].node_in[j]
+                tg.add_edge(j, i, graph.all_out_edges_of_node(i)[j])
 
         return tg
 
@@ -290,12 +293,20 @@ class GraphAlgo(GraphAlgoInterface):
             i.tag = -1
 
     def m_t(self) -> int:
-        GraphAlgo.mark_time = GraphAlgo.mark_time + 1
-        return GraphAlgo.mark_time
+        """
+        changing GraphAlgo.mark_tag to GraphAlgo.mark_tag + 1
+        :return: GraphAlgo.mark_tag + 1
+        """
+        GraphAlgo.mark_tag = GraphAlgo.mark_tag + 1
+        return GraphAlgo.mark_tag
 
     def m_t_init(self) -> int:
-        GraphAlgo.mark_time = 0
-        return GraphAlgo.mark_time
+        """
+        Initialize mark_tag in the GraphAlgo to 0 (mark_tag = 0).
+        :return:GraphAlgo.mark_tag
+        """
+        GraphAlgo.mark_tag = 0
+        return GraphAlgo.mark_tag
 
     @staticmethod
     def list_equals(lst1, lst2):

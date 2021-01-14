@@ -122,6 +122,7 @@ class MyTestCase(unittest.TestCase):
         This test compare calculation of the connected components of given graph,
         compares the results and measures running times.
         """
+
         self.init('../data/Graphs_on_circle/G_10_80_1.json')
         print("G_10_80_1.json")
         nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
@@ -149,7 +150,7 @@ class MyTestCase(unittest.TestCase):
         self.init('../data/A5_edited')
         x1 = nx_res.__next__()
         self.assertEqual(x1, set(g_res[1]))
-        #
+
         nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
         x1 = nx_res.__next__()
         x2 = nx_res.__next__()
