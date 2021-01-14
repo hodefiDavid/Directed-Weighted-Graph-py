@@ -92,9 +92,6 @@ class MyTestCase(unittest.TestCase):
         nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (1, 9))
         self.assertEqual(g_res[0], nx_res)
 
-        # self.init('../data/1MPath.json')
-        # nx_res, g_res = self.compare_times(nx.dijkstra_path_length, self.ga.shortest_path, (819203, 360439))
-        # self.assertEqual(g_res[0], nx_res)
 
     def test_connected_component(self):
         """
@@ -105,15 +102,12 @@ class MyTestCase(unittest.TestCase):
         nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (1000,))
         self.assertEqual(nx_res, set(g_res))
 
-        # self.init('../data/Graphs_on_circle/G_10_80_1.json')
         nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (2000,))
         self.assertEqual(nx_res, set(g_res))
 
-        # self.init('../data/100K.json')
         nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (3000,))
         self.assertEqual(nx_res, set(g_res))
 
-        # self.init('../data/10kG.json')
         nx_res, g_res = self.compare_times(self.get_strongly_cc, self.ga.connected_component, (4000,))
         self.assertEqual(nx_res, set(g_res))
 

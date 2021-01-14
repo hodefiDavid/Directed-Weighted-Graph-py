@@ -191,7 +191,6 @@ class GraphAlgo(GraphAlgoInterface):
                 connected_component = gt.dfs_collect(temp_node, tag)
 
                 # here we remove from the graph the vertices that already belong to SCC
-                gt.plot_graph()
                 for i in connected_component:
                     gt.graph.remove_node(i)
 
