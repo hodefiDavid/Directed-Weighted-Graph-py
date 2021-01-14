@@ -169,16 +169,10 @@ class DiGraph(GraphInterface):
         def __init__(self, node_id: int, pos: tuple = None):
             self.id = node_id
             self.tag = -1.0
-            #remark= ""
             self.remark = 0
             self.node_out = dict()
             self.node_in = dict()
             self.position = pos
-            #for ALGO SCC
-            self.sm = 0
-            self.em = 0
-            self.low_link = 0
-            self.visited = False
 
 
         def add_out(self, node_id: int, weight: float):
@@ -214,5 +208,4 @@ class DiGraph(GraphInterface):
         def __hash__(self):
             return self.id
 
-        # def __cmp__(self, other):
-        #     return  self.tag - other.tag
+

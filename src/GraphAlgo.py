@@ -10,8 +10,7 @@ from Gui import Gui
 class GraphAlgo(GraphAlgoInterface):
     """This class represents an algorithms class for the class Digraph."""
 
-    mark_time = 0 #used for the algorithms Scc
-
+    mark_time = 0  # used for the algorithms Scc
 
     def __init__(self, g: DiGraph = None):
         """
@@ -121,11 +120,10 @@ class GraphAlgo(GraphAlgoInterface):
         curr = self.graph.nodes[id1]
         curr.tag = 0
         p_queue.put((curr.tag, curr))
-        while p_queue.not_empty:
+        while not p_queue.empty():
             curr = p_queue.get()[1]
             if curr.id == id2:
                 return path
-
             if self.graph.nodes[id2].tag != -1:
                 if curr.tag >= self.graph.nodes[id2].tag:
                     break
@@ -142,6 +140,13 @@ class GraphAlgo(GraphAlgoInterface):
     def connected_component(self, id1: int) -> list:
         """
         Finds the Strongly Connected Component(SCC) that node id1 is a part of.
+        To find the well-linked component that contains the vertex v, we need to construct a group of
+        vertices accessible from vertex v lets call this group A. Then a new graph G-transpose** is built
+        then we will find all the vertices accessible from vertex v in the graph G-transpose lets call this group B
+        Group B ∩ A is a group of vertices that consist the well-linked component of Graph G containing the
+        Vertex v. The complexity of an algorithm in the worst case is (| V | * | E |)  because each vertex passes
+        On all sides of the graph.
+        ** instead of creating a new graph G-transpose we use DFS to the IN_NODE vertices
 
         :param self: getting the self of this class
         :param id1: The node id
@@ -151,21 +156,22 @@ class GraphAlgo(GraphAlgoInterface):
             return None
         self.m_t_init()
         self.init_tags()
-        gt = GraphAlgo(self.transpose_graph())
-        set_gt = gt.dfs_cc(id1, self.m_t())
-        set_g = self.dfs_cc(id1, self.m_t())
-        res = list(set.intersection(set_gt, set_g))
-        return res
+        tag = self.m_t()
+        self.dfs_mark(id1, tag)
+        res = self.dfs_collect(id1, tag)
+        return list(res)
 
     def connected_components(self) -> List[list]:
         """
         Finds all the Strongly Connected Component(SCC) in the graph.
         To find the well-linked component that contains the vertex v, we need to construct a group of
-        vertices accessible from vertex v lets call this group A. Then a new graph G-transpose is built
+        vertices accessible from vertex v lets call this group A. Then a new graph G-transpose** is built
         then we will find all the vertices accessible from vertex v in the graph G-transpose lets call this group B
         Group B ∩ A is a group of vertices that consist the well-linked component of Graph G containing the
         Vertex v. The complexity of an algorithm in the worst case is (| V | * | E |)  because each vertex passes
         On all sides of the graph.
+        ** instead of creating a new graph G-transpose we use DFS to the IN_NODE vertices
+
         :param self: getting the self of this class
         :return: The list all SCC
         """
@@ -177,19 +183,46 @@ class GraphAlgo(GraphAlgoInterface):
             lst_node_id.append(i)
 
         while len(lst_node_id) > 0:
-
             temp_node = lst_node_id.pop()
-            set_g = self.dfs_cc(temp_node, self.m_t())
-            set_gt = gt.dfs_cc(temp_node, self.m_t())
-            conncted_componnent_tn = set.intersection(set_gt, set_g)
-            for i in conncted_componnent_tn:
-                if i in lst_node_id:
-                    lst_node_id.remove(i)
-            lst.append(list(conncted_componnent_tn))
+
+            if temp_node in gt.graph.nodes:
+                tag = self.m_t()
+                gt.dfs_mark(temp_node, tag)
+                connected_component = gt.dfs_collect(temp_node, tag)
+                for i in connected_component:
+                    gt.graph.remove_node(i)
+
+                lst.append(list(connected_component))
 
         return lst
 
-    def dfs_cc(self, src_id, tag) -> set:
+    def dfs_mark(self, src_id, tag):
+        """
+        using DFS we mark every node that can be reached from the src node
+        we mark the nodes by changing their tag (node.tag) to the given tag
+        :param src_id:
+        :param tag:
+        """
+        src = self.graph.nodes[src_id]
+        pq = []
+        src.tag = tag
+        heappush(pq, src)
+        while len(pq) > 0:
+            temp = heappop(pq)
+            for i in temp.node_out.keys():
+                t_node = self.graph.nodes[i]
+                if t_node.tag != tag:
+                    t_node.tag = tag
+                    heappush(pq, t_node)
+
+    def dfs_collect(self, src_id, tag) -> set:
+        """
+        using DFS we collect every node that marked by the function dfs_cc
+        we use reverse DFS that mean instead of going throw the OUT_NODE vertices we going throw IN_NODE vertices
+        we trat the graph as a transpose graph
+        :param src_id:
+        :param tag:
+        """
         src = self.graph.nodes[src_id]
         pq = []
         src.tag = tag
@@ -198,12 +231,13 @@ class GraphAlgo(GraphAlgoInterface):
         set_of_connected_nodes.add(src.id)
         while len(pq) > 0:
             temp = heappop(pq)
-            for i in temp.node_out.keys():
+            for i in temp.node_in.keys():
                 t_node = self.graph.nodes[i]
-                if t_node.tag != tag:
-                    t_node.tag = tag
-                    set_of_connected_nodes.add(t_node.id)
-                    heappush(pq, t_node)
+                if t_node.tag == tag:
+                    if t_node.id not in set_of_connected_nodes:
+                        set_of_connected_nodes.add(t_node.id)
+                        heappush(pq, t_node)
+
         return set_of_connected_nodes
 
     def plot_graph(self) -> None:
@@ -263,15 +297,15 @@ class GraphAlgo(GraphAlgoInterface):
         GraphAlgo.mark_time = 0
         return GraphAlgo.mark_time
 
-@staticmethod
-def list_equals(lst1, lst2):
-    """
-    this function checks if all the objects in one list contains in the other list
-    :param lst1: list 1
-    :param lst2: list 2
-    :return: True iff the list are equals
-    """
-    for j in lst1:
-        if j not in lst2:
-            return False
-    return True
+    @staticmethod
+    def list_equals(lst1, lst2):
+        """
+        this function checks if all the objects in one list contains in the other list
+        :param lst1: list 1
+        :param lst2: list 2
+        :return: True iff the list are equals
+        """
+        for j in lst1:
+            if j not in lst2:
+                return False
+        return True

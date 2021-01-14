@@ -122,18 +122,39 @@ class MyTestCase(unittest.TestCase):
         This test compare calculation of the connected components of given graph,
         compares the results and measures running times.
         """
-        self.init('../data/Graphs_on_circle/G_10000_80000_1.json')
-        # self.init('../data/A5_edited')
-
+        self.init('../data/Graphs_on_circle/G_10_80_1.json')
+        print("G_10_80_1.json")
         nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
-        # x1 = nx_res.__next__()
-        # self.assertEqual(x1, set(g_res[1]))
-        # #
-        # nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
-        # x1 = nx_res.__next__()
-        # x2 = nx_res.__next__()
-        # self.assertEqual(x1, set(g_res[1]))
-        # self.assertEqual(x2, set(g_res[0]))
+
+        self.init('../data/Graphs_on_circle/G_100_800_1.json')
+        print("G_100_800_1.json")
+        nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
+
+        self.init('../data/Graphs_on_circle/G_1000_8000_1.json')
+        print("G_1000_8000_1.json")
+        nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
+
+        self.init('../data/Graphs_on_circle/G_10000_80000_1.json')
+        print("G_10000_80000_1.json")
+        nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
+
+        self.init('../data/Graphs_on_circle/G_20000_160000_1.json')
+        print("G_20000_160000_1.json")
+        nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
+
+        self.init('../data/Graphs_on_circle/G_30000_240000_1.json')
+        print("G_30000_240000_1.json")
+        nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
+
+        self.init('../data/A5_edited')
+        x1 = nx_res.__next__()
+        self.assertEqual(x1, set(g_res[1]))
+        #
+        nx_res, g_res = self.compare_times(nx.strongly_connected_components, self.ga.connected_components)
+        x1 = nx_res.__next__()
+        x2 = nx_res.__next__()
+        self.assertEqual(x1, set(g_res[1]))
+        self.assertEqual(x2, set(g_res[0]))
 
     @staticmethod
     def get_strongly_cc(gx, node):
